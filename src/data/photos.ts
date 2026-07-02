@@ -13,6 +13,11 @@ function p(id: number): string {
   return `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=1200`;
 }
 
+/** Wikimedia Commons 1280px thumbnail */
+function w(path: string): string {
+  return `https://upload.wikimedia.org/wikipedia/commons/thumb/${path}`;
+}
+
 /** Key: `${dateIso}::${dayLabel}` — one carousel per timeline day */
 export const DAY_PHOTOS: Record<string, DayPhoto[]> = {
   "2026-07-07::Day 0": [
@@ -368,23 +373,23 @@ export const DAY_PHOTOS: Record<string, DayPhoto[]> = {
   ],
   "2026-07-14::Stay": [
     {
-      src: u("1555881400-5d3600e6dd24"),
-      alt: "Edinburgh castle on the hill at golden hour",
+      src: w("c/c4/Edinburgh_Castle_from_Grass_Market.jpg/1280px-Edinburgh_Castle_from_Grass_Market.jpg"),
+      alt: "Edinburgh Castle viewed from the Grassmarket",
       caption: "Castle rock from the Grassmarket",
     },
     {
-      src: u("1527837168972-c2ca6d091ad7"),
-      alt: "Historic stone buildings along a cobbled close",
+      src: w("0/07/Street_performer%2C_Royal_Mile%2C_Edinburgh.jpg/1280px-Street_performer%2C_Royal_Mile%2C_Edinburgh.jpg"),
+      alt: "Historic Royal Mile street with stone buildings",
       caption: "Old Town evening wander",
     },
     {
-      src: u("1506377580772-261b1a3f4a6e"),
-      alt: "Warmly lit pub interior with wooden beams",
+      src: w("4/4c/Ceilidh_advertising%2C_Royal_Mile%2C_Edinburgh.jpg/1280px-Ceilidh_advertising%2C_Royal_Mile%2C_Edinburgh.jpg"),
+      alt: "Traditional pub sign on the Royal Mile",
       caption: "Celebration dinner after the trail",
     },
     {
-      src: u("1493976040374-85c8e6fae7be"),
-      alt: "Cosy hotel room with city view",
+      src: w("f/f6/Edinburgh_Royal_Mile_from_Salisbury_Crags_20211019.jpg/1280px-Edinburgh_Royal_Mile_from_Salisbury_Crags_20211019.jpg"),
+      alt: "Edinburgh skyline from Salisbury Crags at dusk",
       caption: "Buffer night — no early alarm",
     },
     {
@@ -395,28 +400,28 @@ export const DAY_PHOTOS: Record<string, DayPhoto[]> = {
   ],
   "2026-07-15::Reserve": [
     {
-      src: u("1539635278303-df2cb70220d5"),
-      alt: "Edinburgh castle and gardens in morning sun",
+      src: w("b/bb/Edinburgh_Castle_from_Esplanade_20211019.jpg/1280px-Edinburgh_Castle_from_Esplanade_20211019.jpg"),
+      alt: "Edinburgh Castle from the esplanade",
       caption: "Full day in the capital",
     },
     {
-      src: u("1549145793-03cb38efd7f5"),
-      alt: "Narrow cobbled lane between stone buildings",
+      src: w("6/6a/Royal_Mile%2C_Edinburgh_-_geograph.org.uk_-_1970888.jpg/1280px-Royal_Mile%2C_Edinburgh_-_geograph.org.uk_-_1970888.jpg"),
+      alt: "Royal Mile street looking toward the castle",
       caption: "Royal Mile & closes",
     },
     {
-      src: p(672059),
-      alt: "Grass and rocky path on a city hill",
+      src: w("1/15/Arthur%27s_Seat_2023.jpg/1280px-Arthur%27s_Seat_2023.jpg"),
+      alt: "Arthur's Seat hill above Edinburgh",
       caption: "Arthur's Seat if legs allow",
     },
     {
-      src: u("1599949327102-b726c5647544"),
-      alt: "Museum gallery with visitors",
+      src: w("b/b3/National_Museum_of_Scotland%2C_interior._Edinburgh%2C_Scotland%2C_UK.jpg/1280px-National_Museum_of_Scotland%2C_interior._Edinburgh%2C_Scotland%2C_UK.jpg"),
+      alt: "National Museum of Scotland grand interior hall",
       caption: "National Museum morning",
     },
     {
-      src: p(1032652),
-      alt: "Airplane wing above clouds at sunset",
+      src: w("c/c3/Clouds_from_aircraft.jpg/1280px-Clouds_from_aircraft.jpg"),
+      alt: "View of clouds from an aircraft window",
       caption: "Edinburgh → Tallinn",
     },
   ],
