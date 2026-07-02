@@ -346,24 +346,78 @@ export const DAY_PHOTOS: Record<string, DayPhoto[]> = {
       caption: "Oban → Glasgow Queen Street",
     },
     {
-      src: p(671799),
-      alt: "Historic city buildings on a hill",
-      caption: "Glasgow → Edinburgh",
-    },
-    {
-      src: u("1516026672322-bc52d61a55d5"),
-      alt: "Airplane wing above clouds at sunset",
-      caption: "Edinburgh → Tallinn",
-    },
-    {
-      src: p(671800),
-      alt: "Airport departure lounge with planes outside",
-      caption: "Evening flight home",
-    },
-    {
       src: p(1032650),
       alt: "Railway line through green Scottish countryside",
       caption: "Last views of the Highlands",
+    },
+    {
+      src: p(671799),
+      alt: "Historic city buildings on a hill",
+      caption: "Into Edinburgh Waverley",
+    },
+    {
+      src: u("1516026672322-bc52d61a55d5"),
+      alt: "Scottish city skyline from the train",
+      caption: "Afternoon arrival in the capital",
+    },
+    {
+      src: p(671800),
+      alt: "Railway station concourse with travellers",
+      caption: "Drop packs near the station",
+    },
+  ],
+  "2026-07-14::Stay": [
+    {
+      src: u("1555881400-5d3600e6dd24"),
+      alt: "Edinburgh castle on the hill at golden hour",
+      caption: "Castle rock from the Grassmarket",
+    },
+    {
+      src: u("1527837168972-c2ca6d091ad7"),
+      alt: "Historic stone buildings along a cobbled close",
+      caption: "Old Town evening wander",
+    },
+    {
+      src: u("1506377580772-261b1a3f4a6e"),
+      alt: "Warmly lit pub interior with wooden beams",
+      caption: "Celebration dinner after the trail",
+    },
+    {
+      src: u("1493976040374-85c8e6fae7be"),
+      alt: "Cosy hotel room with city view",
+      caption: "Buffer night — no early alarm",
+    },
+    {
+      src: p(672037),
+      alt: "Night street with warm shop lights",
+      caption: "Edinburgh overnight",
+    },
+  ],
+  "2026-07-15::Reserve": [
+    {
+      src: u("1539635278303-df2cb70220d5"),
+      alt: "Edinburgh castle and gardens in morning sun",
+      caption: "Full day in the capital",
+    },
+    {
+      src: u("1549145793-03cb38efd7f5"),
+      alt: "Narrow cobbled lane between stone buildings",
+      caption: "Royal Mile & closes",
+    },
+    {
+      src: p(672059),
+      alt: "Grass and rocky path on a city hill",
+      caption: "Arthur's Seat if legs allow",
+    },
+    {
+      src: u("1599949327102-b726c5647544"),
+      alt: "Museum gallery with visitors",
+      caption: "National Museum morning",
+    },
+    {
+      src: p(1032652),
+      alt: "Airplane wing above clouds at sunset",
+      caption: "Edinburgh → Tallinn",
     },
   ],
 };

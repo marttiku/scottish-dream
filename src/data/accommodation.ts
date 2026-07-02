@@ -247,4 +247,35 @@ export const OVERNIGHT_STAYS: OvernightStay[] = [
       },
     ],
   },
+  {
+    id: "edinburgh-14",
+    dateIso: "2026-07-14",
+    dayLabel: "Stay",
+    weatherDayLabel: "Stay",
+    location: "Edinburgh",
+    headline: "Overnight in Edinburgh",
+    summary:
+      "Buffer night after the long train from Oban. Same area as arrival — walkable pubs and a full day tomorrow.",
+    options: [
+      {
+        name: "Motel One Edinburgh-Princes",
+        type: "hotel",
+        url: "https://www.motel-one.com/en/hotels/edinburgh/hotel-edinburgh-princes/",
+        notes: "Near Waverley · good value",
+        recommended: true,
+      },
+      {
+        name: "Hub by Premier Inn Edinburgh Royal Mile",
+        type: "hotel",
+        url: "https://www.premierinn.com/gb/en/hotels/scotland/lothian/edinburgh/edinburgh-royal-mile.html",
+        notes: "Central · compact smart rooms",
+      },
+      {
+        name: "Apex City of Edinburgh Hotel",
+        type: "hotel",
+        url: "https://www.apexhotels.co.uk/destinations/edinburgh/apex-city-of-edinburgh-hotel/",
+        notes: "Grassmarket area · pool",
+      },
+    ],
+  },
 ];

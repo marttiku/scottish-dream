@@ -40,14 +40,35 @@ export interface ResupplyPoint {
   notes: string;
 }
 
+/** Trail food is planned per person; shopping & pack weights scale by this. */
+export const FOOD_PARTY = {
+  hikers: 2,
+} as const;
+
 export const FOOD_TARGETS = {
-  /** kcal/day on strenuous multi-day pack carries */
+  /** kcal/day per hiker on strenuous multi-day pack carries */
   hikingDayKcal: "3,200–4,000",
   macroSplit: { carbs: 52, protein: 17, fat: 31 },
-  /** Dry food only — excludes stove, fuel, water */
-  maxPackFoodWeightG: 2420,
   calPerGramTarget: 4.5,
 } as const;
+
+export interface FoodTotals {
+  weightG: number;
+  calories: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+}
+
+function scaleFoodTotals(totals: FoodTotals, multiplier: number): FoodTotals {
+  return {
+    weightG: totals.weightG * multiplier,
+    calories: totals.calories * multiplier,
+    proteinG: totals.proteinG * multiplier,
+    carbsG: totals.carbsG * multiplier,
+    fatG: totals.fatG * multiplier,
+  };
+}
 
 export const FOOD_ITEMS: FoodItemDef[] = [
   {
@@ -230,7 +251,8 @@ export const FOOD_DAY_PLANS: FoodDayPlan[] = [
     dayLabel: "Hike 1",
     title: "Inverie → Sourlies",
     targetKcal: 3400,
-    notes: "Pub meal possible in Inverie evening before — still carry full Day 1 kit.",
+    notes:
+      "Pub meal possible in Inverie evening before — still carry full Day 1 kit per hiker.",
     entries: [
       { itemId: "porridge-oats", qty: 1 },
       { itemId: "milk-powder", qty: 1 },
@@ -274,7 +296,8 @@ export const FOOD_DAY_PLANS: FoodDayPlan[] = [
     dayLabel: "Hike 3",
     title: "A' Chuil → Glenfinnan",
     targetKcal: 4000,
-    notes: "30 km day — graze constantly; early porridge, late dinner in village or hostel.",
+    notes:
+      "30 km day — graze constantly. Share stove; eat before the pass and again at Glenfinnan.",
     entries: [
       { itemId: "porridge-oats", qty: 1 },
       { itemId: "milk-powder", qty: 1 },
@@ -319,7 +342,8 @@ export const FOOD_DAY_PLANS: FoodDayPlan[] = [
     title: "Strontian → Oban",
     targetKcal: 2800,
     resupply: "Strontian shop AM · Oban seafood dinner PM",
-    notes: "Light pack day — bus & ferries. Save weight for celebratory Oban meal.",
+    notes:
+      "Light pack day — bus & ferries. Pool snacks; Oban seafood dinner for two in the evening.",
     entries: [
       { itemId: "porridge-oats", qty: 1 },
       { itemId: "milk-powder", qty: 1 },
@@ -343,40 +367,33 @@ export const RESUPPLY_POINTS: ResupplyPoint[] = [
     location: "Inverie · Old Forge",
     what: "Pub meal + very limited supplies",
     notes:
-      "Last indoor meal for 3 days. No proper shop — carry all Knoydart food from Mallaig or Edinburgh.",
+      "Last indoor meal for 3 days. No proper shop — buy & split Knoydart food for two before the ferry.",
   },
   {
     dateIso: "2026-07-11",
     location: "Glenfinnan",
     what: "SYHA café · small village shop",
     notes:
-      "Restock tortillas, cheese, bars for Morvern leg. Freeze-dried dinners if running low.",
+      "Restock for two: tortillas, cheese, bars for Morvern leg. Double freeze-dried bags if low.",
   },
   {
     dateIso: "2026-07-12",
     location: "Strontian",
     what: "Village shop & café",
-    notes: "Fresh bread, fruit, chilled goods. Top up before transit day.",
+    notes: "Fresh bread, fruit, chilled goods for two. Top up before transit day.",
   },
   {
     dateIso: "2026-07-13",
     location: "Oban",
     what: "Supermarkets · harbour restaurants",
-    notes: "Full resupply — reward dinner. No trail food needed after tonight.",
+    notes: "Full resupply — celebration dinner for two. No trail food after tonight.",
   },
 ];
-
-export interface FoodTotals {
-  weightG: number;
-  calories: number;
-  proteinG: number;
-  carbsG: number;
-  fatG: number;
-}
 
 export interface FoodDayTotals extends FoodTotals {
   targetKcal: number;
   deltaKcal: number;
+  perHiker: FoodTotals & { targetKcal: number };
 }
 
 export function sumFoodEntries(entries: FoodDayEntry[]): FoodTotals {
@@ -397,18 +414,22 @@ export function sumFoodEntries(entries: FoodDayEntry[]): FoodTotals {
 }
 
 export function getDayFoodTotals(plan: FoodDayPlan): FoodDayTotals {
-  const totals = sumFoodEntries(plan.entries);
+  const perHiker = sumFoodEntries(plan.entries);
+  const party = scaleFoodTotals(perHiker, FOOD_PARTY.hikers);
+  const partyTarget = plan.targetKcal * FOOD_PARTY.hikers;
   return {
-    ...totals,
-    targetKcal: plan.targetKcal,
-    deltaKcal: totals.calories - plan.targetKcal,
+    ...party,
+    targetKcal: partyTarget,
+    deltaKcal: party.calories - partyTarget,
+    perHiker: { ...perHiker, targetKcal: plan.targetKcal },
   };
 }
 
-/** Aggregate shopping list — max qty needed across all days */
+/** Aggregate shopping list — totals for the full party */
 export function getShoppingList(): Array<{
   item: FoodItemDef;
   qty: number;
+  qtyPerHiker: number;
   totals: FoodTotals;
 }> {
   const qtyByItem = new Map<string, number>();
@@ -418,10 +439,11 @@ export function getShoppingList(): Array<{
     }
   }
   return [...qtyByItem.entries()]
-    .map(([id, qty]) => {
+    .map(([id, qtyPerHiker]) => {
       const item = getFoodItem(id)!;
+      const qty = qtyPerHiker * FOOD_PARTY.hikers;
       const totals = sumFoodEntries([{ itemId: id, qty }]);
-      return { item, qty, totals };
+      return { item, qty, qtyPerHiker, totals };
     })
     .sort((a, b) => a.item.category.localeCompare(b.item.category));
 }
@@ -440,12 +462,13 @@ export function getFoodPlanSummary() {
   );
 
   const dayCount = FOOD_DAY_PLANS.length;
-  const dailyCalories = FOOD_DAY_PLANS.map(
+  const dailyCaloriesPerHiker = FOOD_DAY_PLANS.map(
     (p) => sumFoodEntries(p.entries).calories,
   );
-  const avgCaloriesPerDay = Math.round(
-    dailyCalories.reduce((a, b) => a + b, 0) / dayCount,
+  const avgCaloriesPerHikerPerDay = Math.round(
+    dailyCaloriesPerHiker.reduce((a, b) => a + b, 0) / dayCount,
   );
+  const avgCaloriesPartyPerDay = avgCaloriesPerHikerPerDay * FOOD_PARTY.hikers;
   const macroKcal =
     totals.proteinG * 4 + totals.carbsG * 4 + totals.fatG * 9;
   const macroPercent = {
@@ -458,7 +481,7 @@ export function getFoodPlanSummary() {
   const knoydartPlans = FOOD_DAY_PLANS.filter((p) =>
     ["2026-07-09", "2026-07-10", "2026-07-11"].includes(p.dateIso),
   );
-  const knoydartWeightG = knoydartPlans.reduce(
+  const knoydartPerHikerG = knoydartPlans.reduce(
     (sum, plan) => sum + sumFoodEntries(plan.entries).weightG,
     0,
   );
@@ -466,30 +489,39 @@ export function getFoodPlanSummary() {
   const morvernPlans = FOOD_DAY_PLANS.filter((p) =>
     ["2026-07-12", "2026-07-13"].includes(p.dateIso),
   );
-  const morvernWeightG = morvernPlans.reduce(
+  const morvernPerHikerG = morvernPlans.reduce(
     (sum, plan) => sum + sumFoodEntries(plan.entries).weightG,
     0,
   );
 
+  const knoydartPartyG = knoydartPerHikerG * FOOD_PARTY.hikers;
+  const morvernPartyG = morvernPerHikerG * FOOD_PARTY.hikers;
+
   return {
     ...totals,
     dayCount,
-    avgCaloriesPerDay,
+    hikers: FOOD_PARTY.hikers,
+    avgCaloriesPerHikerPerDay,
+    avgCaloriesPartyPerDay,
     calPerGram: Math.round((totals.calories / totals.weightG) * 10) / 10,
     macroPercent,
-    knoydartPackWeightG: knoydartWeightG,
-    morvernPackWeightG: morvernWeightG,
-    maxPackWeightG: knoydartWeightG,
+    knoydartPackPerHikerG: knoydartPerHikerG,
+    morvernPackPerHikerG: morvernPerHikerG,
+    knoydartPackPartyG: knoydartPartyG,
+    morvernPackPartyG: morvernPartyG,
+    maxPackPerHikerG: knoydartPerHikerG,
+    maxPackPartyG: knoydartPartyG,
   };
 }
 
 export const COOK_KIT = {
   items: [
-    { name: "Titanium pot (~900 ml)", weightG: 85 },
-    { name: "Gas canister 100 g (net)", weightG: 100 },
+    { name: "Titanium pot (~1.3 L) — boils for two", weightG: 110 },
+    { name: "Gas canister 230 g (net)", weightG: 230 },
     { name: "Mini stove (e.g. MSR PocketRocket)", weightG: 75 },
-    { name: "Spork + lighter + small sponge", weightG: 25 },
+    { name: "2× spork + lighter + small sponge", weightG: 35 },
   ],
-  totalWeightG: 285,
-  notes: "One hot meal/day. Canister lasts ~5–6 boils on this plan.",
+  totalWeightG: 450,
+  notes:
+    "One shared stove — two hot meals/night (double water). 230 g canister lasts ~5–6 double boils.",
 };

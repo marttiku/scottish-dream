@@ -52,11 +52,11 @@ export const TRIP_META = {
   title: "Scottish Dream",
   subtitle: "Knoydart & Morvern · July 2026",
   departureDate: "2026-07-07",
-  returnDate: "2026-07-14",
+  returnDate: "2026-07-15",
   totalHikingKm: "~108",
   hikingDays: 5,
   wildCampNights: 3,
-  lodgedNights: 4,
+  lodgedNights: 5,
   route: "Inverie → Oban",
   tagline:
     "Tallinn to the wild Highlands — Inverie across Knoydart, then Morvern by boot and ferry to Oban.",
@@ -150,10 +150,27 @@ export const TIMELINE: TimelineEvent[] = [
   {
     dateIso: "2026-07-14",
     dayLabel: "Return",
-    title: "Oban → Edinburgh → Tallinn",
-    description: "ScotRail to Glasgow, onward to Edinburgh. Evening flight home.",
+    title: "Oban → Edinburgh",
+    description:
+      "Morning ScotRail to the capital. Afternoon in town — drop packs, stroll the Old Town.",
     type: "train",
-    details: ["Oban → Glasgow Queen Street (~3 h)", "Glasgow → Edinburgh (~50 min)"],
+    details: [
+      "Oban → Glasgow Queen Street (~3 h)",
+      "Glasgow → Edinburgh Waverley (~50 min)",
+      "Overnight in Edinburgh — see Stays",
+    ],
+  },
+  {
+    dateIso: "2026-07-15",
+    dayLabel: "Reserve",
+    title: "Edinburgh · buffer day",
+    description:
+      "Flex day for weather delays, missed ferries, or a proper capital visit before flying home.",
+    type: "stay",
+    details: [
+      "Arthur's Seat · Royal Mile · National Museum",
+      "Evening flight to Tallinn — see Connections",
+    ],
   },
 ];
 
@@ -412,7 +429,7 @@ export const CONNECTIONS: Connection[] = [
     url: "https://www.scotrail.co.uk/plan/journey?origin=Oban&destination=Edinburgh%20(Waverley)&outwardDate=2026-07-14",
     timetableUrl: "https://www.scotrail.co.uk/train-times/oban-to-edinburgh-waverley",
     schedule: "Tue 14 Jul: first ~05:17 · last ~20:39 · change at Glasgow Queen Street",
-    notes: "Allow connection time in Glasgow for evening flight. Advance tickets cheaper.",
+    notes: "Arrive Edinburgh afternoon — buffer night before sightseeing & flight.",
     dateIso: "2026-07-14",
   },
   {
@@ -421,11 +438,11 @@ export const CONNECTIONS: Connection[] = [
     route: "EDI → TLL",
     duration: "~2 h 45 min",
     operator: "Ryanair · airBaltic",
-    url: "https://www.google.com/travel/flights?q=flights%20from%20EDI%20to%20TLL%20on%202026-07-14",
+    url: "https://www.google.com/travel/flights?q=flights%20from%20EDI%20to%20TLL%20on%202026-07-15",
     timetableUrl: "https://www.edinburghairport.com/flights/live-flight-arrivals-departures",
-    schedule: "Evening departures typical — coordinate with Oban train arrival",
-    notes: "Book direct with airline. Tram or taxi from Waverley to airport (~30 min).",
-    dateIso: "2026-07-14",
+    schedule: "Wed 15 Jul: day in Edinburgh · evening departures typical",
+    notes: "Book direct with airline. Tram or taxi from city centre to airport (~30 min).",
+    dateIso: "2026-07-15",
   },
 ];
 
@@ -434,10 +451,8 @@ export const PACKING: PackingCategory[] = [
     name: "Shelter & Sleep",
     icon: "tent",
     items: [
-      "4-season tent (wind-resistant)",
-      "Sleeping bag comfort 0–5 °C",
-      "Insulated sleeping pad",
-      "Bothy bag / emergency shelter",
+      "See Gear shop — Ferrino BLOW 3 + 2× YUKON 0 bags & ULTRA 3R pads",
+      "Bothy bag / emergency shelter (bring from home)",
     ],
   },
   {
@@ -466,9 +481,8 @@ export const PACKING: PackingCategory[] = [
     name: "Food & Water",
     icon: "utensils",
     items: [
-      "See Food section for full meal plan",
-      "Lightweight stove & fuel (~285 g kit)",
-      "Water filter or purification tablets",
+      "See Food section — planned for 2 hikers",
+      "See Gear shop — PocketRocket + TRIBAL 1.2 L pot + MSR Trail Base filter",
       "Electrolyte tablets",
     ],
   },

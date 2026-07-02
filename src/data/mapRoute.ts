@@ -27,7 +27,7 @@ export const MAP_POINTS: MapPoint[] = [
     lat: 55.9533,
     lng: -3.1883,
     type: "city",
-    note: "Tue 7 Jul · arrival",
+    note: "Tue 7 Jul arrival · Tue 14–Wed 15 Jul return",
   },
   {
     id: "mallaig",

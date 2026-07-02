@@ -60,7 +60,7 @@ export function Wildlife() {
       </div>
       <p className="text-xs text-gray-600 mt-4 text-center">
         Keep distance · never feed wild animals · dogs on lead near livestock &
-        ground-nesting birds
+        ground-nesting birds · photos via Wikimedia Commons (CC)
       </p>
     </section>
   );

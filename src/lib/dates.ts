@@ -35,7 +35,7 @@ export function formatTripDateMedium(iso: string): string {
   });
 }
 
-/** 7–14 July 2026 */
+/** 7–15 July 2026 */
 export function formatTripDateRange(startIso: string, endIso: string): string {
   const startDay = Number(startIso.slice(8, 10));
   const endDay = Number(endIso.slice(8, 10));
@@ -47,7 +47,7 @@ export function formatTripDateRange(startIso: string, endIso: string): string {
   return `${startDay}–${endDay} ${monthYear}`;
 }
 
-/** Tue 7 Jul – Tue 14 Jul 2026 */
+/** Tue 7 Jul – Wed 15 Jul 2026 */
 export function formatTripDateRangeWithWeekdays(
   startIso: string,
   endIso: string,

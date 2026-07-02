@@ -23,7 +23,7 @@ export function PackingList() {
     <section id="packing">
       <SectionHeader
         title="Packing list"
-        subtitle="Self-supported · 5 hiking days · July conditions"
+        subtitle="Self-supported · 5 hiking days · July conditions · shop links in Gear shop"
       />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {PACKING.map((cat) => {

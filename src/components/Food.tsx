@@ -1,6 +1,7 @@
 import {
   COOK_KIT,
   FOOD_DAY_PLANS,
+  FOOD_PARTY,
   FOOD_TARGETS,
   RESUPPLY_POINTS,
   getDayFoodTotals,
@@ -49,7 +50,7 @@ export function Food() {
     <section id="food">
       <SectionHeader
         title="Food plan"
-        subtitle={`Self-supported · ${summary.dayCount} trail days · target ${FOOD_TARGETS.hikingDayKcal} kcal/day`}
+        subtitle={`${FOOD_PARTY.hikers} hikers · self-supported · ${summary.dayCount} trail days · ${FOOD_TARGETS.hikingDayKcal} kcal/person/day`}
       />
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
@@ -57,13 +58,13 @@ export function Food() {
           icon={Scale}
           label="Shopping weight"
           value={formatG(summary.weightG)}
-          hint="Dry food total"
+          hint={`${FOOD_PARTY.hikers} hikers · dry food total`}
         />
         <SummaryCard
           icon={Flame}
           label="Avg calories"
-          value={`${formatKcal(summary.avgCaloriesPerDay)} / day`}
-          hint={`${formatKcal(summary.calories)} kcal total`}
+          value={`${formatKcal(summary.avgCaloriesPerHikerPerDay)} / person`}
+          hint={`${formatKcal(summary.avgCaloriesPartyPerDay)} / day both · ${formatKcal(summary.calories)} trip`}
         />
         <SummaryCard
           icon={TrendingUp}
@@ -74,14 +75,14 @@ export function Food() {
         <SummaryCard
           icon={ShoppingBag}
           label="Max pack food"
-          value={formatG(summary.maxPackWeightG)}
-          hint="Knoydart block (3 days)"
+          value={formatG(summary.maxPackPerHikerG)}
+          hint={`${formatG(summary.maxPackPartyG)} both · split ~50/50`}
         />
         <SummaryCard
           icon={UtensilsCrossed}
           label="Cook kit"
           value={formatG(COOK_KIT.totalWeightG)}
-          hint="Stove + 100 g gas"
+          hint="Shared · 1.3 L pot + 230 g gas"
         />
       </div>
 
@@ -128,7 +129,7 @@ export function Food() {
 
       <div className="mt-8">
         <h3 className="text-sm font-semibold text-gray-300 mb-3">
-          Shopping list
+          Shopping list · {FOOD_PARTY.hikers} hikers
         </h3>
         <div className="overflow-x-auto rounded-lg border border-gray-800">
           <table className="w-full text-sm">
@@ -150,7 +151,7 @@ export function Food() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
-              {shopping.map(({ item, qty, totals }) => (
+              {shopping.map(({ item, qty, qtyPerHiker, totals }) => (
                 <tr key={item.id} className="bg-gray-900/50 hover:bg-gray-900">
                   <td className="px-4 py-3">
                     <p className="text-gray-100">{item.name}</p>
@@ -158,7 +159,12 @@ export function Food() {
                       {CATEGORY_LABELS[item.category]} · {item.unitLabel}
                     </p>
                   </td>
-                  <td className="px-4 py-3 text-gray-300">{qty}×</td>
+                  <td className="px-4 py-3 text-gray-300">
+                    {qty}×
+                    <span className="block text-xs text-gray-500">
+                      {qtyPerHiker}× each
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-right text-gray-300 tabular-nums">
                     {formatG(totals.weightG)}
                   </td>
@@ -199,13 +205,15 @@ export function Food() {
           </table>
         </div>
         <p className="text-xs text-gray-600 mt-2">
-          P/C/F = protein / carbs / fat. Macros suit endurance hiking — carb-heavy
-          with enough fat for satiety on long days.
+          Quantities are for both hikers. Daily meals below are per person.
+          Macros suit endurance hiking — carb-heavy with enough fat for long days.
         </p>
       </div>
 
       <div className="mt-8">
-        <h3 className="text-sm font-semibold text-gray-300 mb-3">Daily meals</h3>
+        <h3 className="text-sm font-semibold text-gray-300 mb-3">
+          Daily meals · per hiker
+        </h3>
         <div className="space-y-4">
           {FOOD_DAY_PLANS.map((plan) => (
             <DayPlanCard key={plan.dateIso} plan={plan} />
@@ -219,21 +227,23 @@ export function Food() {
           <li>
             · Knoydart carry (9–11 Jul):{" "}
             <span className="text-gray-300">
-              {formatG(summary.knoydartPackWeightG)} dry food
+              {formatG(summary.knoydartPackPerHikerG)} per hiker
             </span>{" "}
-            — no shop until Glenfinnan
+            ({formatG(summary.knoydartPackPartyG)} both) — split between packs,
+            no shop until Glenfinnan
           </li>
           <li>
             · Morvern carry (12–13 Jul):{" "}
             <span className="text-gray-300">
-              {formatG(summary.morvernPackWeightG)} dry food
+              {formatG(summary.morvernPackPerHikerG)} per hiker
             </span>{" "}
-            — resupply in Strontian & Oban
+            ({formatG(summary.morvernPackPartyG)} both) — resupply in Strontian
+            & Oban
           </li>
           <li>· {COOK_KIT.notes}</li>
           <li>
-            · Water is abundant on Knoydart — carry extra on Hike 3 (Glenfinnan
-            day)
+            · Water is abundant on Knoydart — carry extra on Hike 3; two litres
+            each minimum on the Glenfinnan day
           </li>
         </ul>
       </div>
@@ -374,7 +384,11 @@ function DayPlanCard({
               {formatKcal(totals.calories)} kcal
             </p>
             <p className="text-xs text-gray-500">
-              target {formatKcal(plan.targetKcal)} · {formatG(totals.weightG)}
+              {formatKcal(totals.perHiker.calories)} per hiker · target{" "}
+              {formatKcal(plan.targetKcal)} each
+            </p>
+            <p className="text-xs text-gray-600">
+              {formatG(totals.perHiker.weightG)} dry food per pack
             </p>
             <span
               className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${

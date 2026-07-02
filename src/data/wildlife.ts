@@ -13,13 +13,49 @@ export interface WildlifeSpecies {
   photos: DayPhoto[];
 }
 
-function p(id: number): string {
-  return `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=1200`;
-}
-
-function u(id: string): string {
-  return `https://images.unsplash.com/photo-${id}?w=1200&q=80`;
-}
+/** Verified Wikimedia Commons species photos (CC-licensed) */
+const W = {
+  redDeerScotland:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Red_deer_stag_-_geograph.org.uk_-_8324238.jpg/1280px-Red_deer_stag_-_geograph.org.uk_-_8324238.jpg",
+  redDeerStag:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/RedDeerStag.jpg/1280px-RedDeerStag.jpg",
+  goldenEagle1:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/015_Wild_Golden_Eagle_in_flight_at_Pfyn-Finges_%28Switzerland%29_Photo_by_Giles_Laurent.jpg/1280px-015_Wild_Golden_Eagle_in_flight_at_Pfyn-Finges_%28Switzerland%29_Photo_by_Giles_Laurent.jpg",
+  goldenEagle2:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/016_Wild_Golden_Eagle_in_flight_at_Pfyn-Finges_%28Switzerland%29_Photo_by_Giles_Laurent.jpg/1280px-016_Wild_Golden_Eagle_in_flight_at_Pfyn-Finges_%28Switzerland%29_Photo_by_Giles_Laurent.jpg",
+  seaEagleScotland:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/White_Tailed_Sea_Eagle_-_geograph.org.uk_-_5362805.jpg/1280px-White_Tailed_Sea_Eagle_-_geograph.org.uk_-_5362805.jpg",
+  seaEagleFlight:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/White-tailed_eagle_%28Haliaeetus_albicilla%29_in_flight_2.jpg/1280px-White-tailed_eagle_%28Haliaeetus_albicilla%29_in_flight_2.jpg",
+  otter1:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Otter_-_Eurasian_otter_-_Lutra_lutra.jpg/1280px-Otter_-_Eurasian_otter_-_Lutra_lutra.jpg",
+  otter2:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/European_otter_01.jpg/1280px-European_otter_01.jpg",
+  commonSeal1:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Common_seal_%28Phoca_vitulina%29.jpg/1280px-Common_seal_%28Phoca_vitulina%29.jpg",
+  commonSeal2:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Common_seal_%28Phoca_vitulina%29_2.jpg/1280px-Common_seal_%28Phoca_vitulina%29_2.jpg",
+  redSquirrel1:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Red_squirrel_%2821808%29.jpg/1280px-Red_squirrel_%2821808%29.jpg",
+  redSquirrel2:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Sciurus_vulgaris_186868985.jpg/1280px-Sciurus_vulgaris_186868985.jpg",
+  pineMarten1:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/European_pine_marten_%28Martes_martes%29_Drenthe.jpg/1280px-European_pine_marten_%28Martes_martes%29_Drenthe.jpg",
+  pineMarten2:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/European_pine_marten_%28Martes_martes%29_Drenthe_2.jpg/1280px-European_pine_marten_%28Martes_martes%29_Drenthe_2.jpg",
+  porpoise1:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Phocoena_phocoena.2.jpg/1280px-Phocoena_phocoena.2.jpg",
+  porpoise2:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Marsvin_%28Phocoena_phocoena%29.jpg/1280px-Marsvin_%28Phocoena_phocoena%29.jpg",
+  diver1:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Black-throated_loon_%28Gavia_arctica%29_2022.jpg/1280px-Black-throated_loon_%28Gavia_arctica%29_2022.jpg",
+  diver2:
+    "https://upload.wikimedia.org/wikipedia/commons/f/ff/Gavia_arctica1.jpg",
+  highlandCattleSkye:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Highland_Cattle_on_Isle_of_Skye%2C_Scotland.jpg/1280px-Highland_Cattle_on_Isle_of_Skye%2C_Scotland.jpg",
+  highlandCattleHebrides:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Highland_Cattle%2C_Lewis_and_Harris%2C_The_Outer_Hebrides%2C_Scotland.jpg/1280px-Highland_Cattle%2C_Lewis_and_Harris%2C_The_Outer_Hebrides%2C_Scotland.jpg",
+} as const;
 
 const LIKELIHOOD_LABELS: Record<WildlifeLikelihood, string> = {
   common: "Common",
@@ -43,13 +79,13 @@ export const WILDLIFE_SPECIES: WildlifeSpecies[] = [
     likelihood: "common",
     photos: [
       {
-        src: p(1661546),
-        alt: "Red deer stag on a Highland hillside",
-        caption: "Open hillside grazing",
+        src: W.redDeerScotland,
+        alt: "Red deer stag in the Scottish Highlands",
+        caption: "Highland stag · geograph.org.uk",
       },
       {
-        src: p(1661547),
-        alt: "Red deer hind in moorland grass",
+        src: W.redDeerStag,
+        alt: "Red deer stag standing in moorland",
         caption: "Glen floors at first light",
       },
     ],
@@ -64,14 +100,14 @@ export const WILDLIFE_SPECIES: WildlifeSpecies[] = [
     likelihood: "possible",
     photos: [
       {
-        src: p(128756),
-        alt: "Golden eagle soaring over mountains",
-        caption: "Upland thermals above Knoydart",
+        src: W.goldenEagle1,
+        alt: "Golden eagle soaring in flight",
+        caption: "Scan upland thermals above Knoydart",
       },
       {
-        src: p(128757),
-        alt: "Bird of prey in flight against a blue sky",
-        caption: "Watch ridges on clear days",
+        src: W.goldenEagle2,
+        alt: "Golden eagle with wings spread in flight",
+        caption: "Slow wingbeats on clear days",
       },
     ],
   },
@@ -85,14 +121,14 @@ export const WILDLIFE_SPECIES: WildlifeSpecies[] = [
     likelihood: "possible",
     photos: [
       {
-        src: p(128758),
-        alt: "White-tailed sea eagle in flight",
-        caption: "Loch Shiel & sea lochs",
+        src: W.seaEagleScotland,
+        alt: "White-tailed sea eagle in Scotland",
+        caption: "West coast reintroduction · geograph.org.uk",
       },
       {
-        src: p(1661549),
-        alt: "Large eagle perched on a coastal branch",
-        caption: "Scan treelines from the ferry",
+        src: W.seaEagleFlight,
+        alt: "White-tailed eagle in flight",
+        caption: "Watch from Loch Shiel & ferries",
       },
     ],
   },
@@ -106,13 +142,13 @@ export const WILDLIFE_SPECIES: WildlifeSpecies[] = [
     likelihood: "possible",
     photos: [
       {
-        src: p(128759),
-        alt: "Otter swimming in calm water",
+        src: W.otter1,
+        alt: "Eurasian otter on a rocky shore",
         caption: "Dawn on sea lochs",
       },
       {
-        src: p(128760),
-        alt: "Otter on a rocky shoreline",
+        src: W.otter2,
+        alt: "European otter swimming",
         caption: "Rocky creeks near camp",
       },
     ],
@@ -126,13 +162,13 @@ export const WILDLIFE_SPECIES: WildlifeSpecies[] = [
     likelihood: "common",
     photos: [
       {
-        src: p(128761),
-        alt: "Seal resting on rocks in a sea loch",
+        src: W.commonSeal1,
+        alt: "Harbour seal resting on rocks",
         caption: "Loch Nevis skerries",
       },
       {
-        src: p(325649),
-        alt: "Seal head above water",
+        src: W.commonSeal2,
+        alt: "Common seal on a shoreline",
         caption: "Curious heads near the ferry",
       },
     ],
@@ -147,13 +183,13 @@ export const WILDLIFE_SPECIES: WildlifeSpecies[] = [
     likelihood: "possible",
     photos: [
       {
-        src: p(325650),
+        src: W.redSquirrel1,
         alt: "Red squirrel on a tree branch",
         caption: "Atlantic oak canopy",
       },
       {
-        src: p(325651),
-        alt: "Red squirrel eating on a mossy log",
+        src: W.redSquirrel2,
+        alt: "Red squirrel Sciurus vulgaris",
         caption: "Hike 4 woodland",
       },
     ],
@@ -168,13 +204,13 @@ export const WILDLIFE_SPECIES: WildlifeSpecies[] = [
     likelihood: "lucky",
     photos: [
       {
-        src: p(325652),
-        alt: "Pine marten on a forest floor",
+        src: W.pineMarten1,
+        alt: "European pine marten on a log",
         caption: "Woodland edges at dusk",
       },
       {
-        src: p(325654),
-        alt: "Pine marten climbing a tree trunk",
+        src: W.pineMarten2,
+        alt: "Pine marten Martes martes close-up",
         caption: "Ardnamurchan rainforest",
       },
     ],
@@ -189,13 +225,13 @@ export const WILDLIFE_SPECIES: WildlifeSpecies[] = [
     likelihood: "possible",
     photos: [
       {
-        src: p(325655),
-        alt: "Porpoise dorsal fin above sea water",
+        src: W.porpoise1,
+        alt: "Harbour porpoise at the water surface",
         caption: "Sound of Mull crossings",
       },
       {
-        src: p(325656),
-        alt: "Marine mammal surfacing in a calm sea loch",
+        src: W.porpoise2,
+        alt: "Harbour porpoise Phocoena phocoena",
         caption: "Calm transit days",
       },
     ],
@@ -210,13 +246,13 @@ export const WILDLIFE_SPECIES: WildlifeSpecies[] = [
     likelihood: "lucky",
     photos: [
       {
-        src: p(325657),
-        alt: "Diver bird swimming on a Highland loch",
+        src: W.diver1,
+        alt: "Black-throated diver on water",
         caption: "Open water on remote lochs",
       },
       {
-        src: p(325658),
-        alt: "Water bird on a still Scottish loch",
+        src: W.diver2,
+        alt: "Black-throated diver Gavia arctica",
         caption: "Listen for far-carrying calls",
       },
     ],
@@ -230,13 +266,13 @@ export const WILDLIFE_SPECIES: WildlifeSpecies[] = [
     likelihood: "common",
     photos: [
       {
-        src: u("1505142468610-359e7d316be0"),
-        alt: "Highland cow with long horns in a field",
+        src: W.highlandCattleSkye,
+        alt: "Highland cattle on the Isle of Skye, Scotland",
         caption: "Estate tracks & farmland",
       },
       {
-        src: p(325659),
-        alt: "Hairy Highland cattle in moorland grass",
+        src: W.highlandCattleHebrides,
+        alt: "Highland cattle in the Outer Hebrides, Scotland",
         caption: "West Highland Line country",
       },
     ],

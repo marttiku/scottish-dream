@@ -5,6 +5,7 @@ import { Timeline } from "./components/Timeline";
 import { Accommodation } from "./components/Accommodation";
 import { Connections } from "./components/Connections";
 import { PackingList } from "./components/PackingList";
+import { GearShop } from "./components/GearShop";
 import { Food } from "./components/Food";
 import { Tips } from "./components/Tips";
 import { Wildlife } from "./components/Wildlife";
@@ -50,6 +51,7 @@ export default function App() {
 
           <Connections />
           <PackingList />
+          <GearShop />
           <Food />
           <Weather />
           <Wildlife />
