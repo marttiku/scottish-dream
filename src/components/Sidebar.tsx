@@ -1,8 +1,8 @@
 import {
   Bus,
+  Bird,
   Compass,
   Footprints,
-  Map,
   Package,
   Plane,
   Ship,
@@ -10,16 +10,19 @@ import {
   Mountain,
   Info,
   CloudSun,
+  BedDouble,
+  UtensilsCrossed,
 } from "lucide-react";
 
 const NAV_ITEMS = [
   { id: "overview", label: "Overview", icon: Mountain },
   { id: "timeline", label: "Timeline", icon: Footprints },
-  { id: "knoydart", label: "Knoydart", icon: Map },
-  { id: "morvern", label: "Morvern", icon: Map },
+  { id: "stays", label: "Stays", icon: BedDouble },
   { id: "connections", label: "Connections", icon: Train },
   { id: "packing", label: "Packing", icon: Package },
+  { id: "food", label: "Food", icon: UtensilsCrossed },
   { id: "weather", label: "Weather", icon: CloudSun },
+  { id: "wildlife", label: "Wildlife", icon: Bird },
   { id: "tips", label: "Tips", icon: Info },
 ] as const;
 

@@ -2,16 +2,20 @@ import { Sidebar, MobileNav } from "./components/Sidebar";
 import { Hero } from "./components/Hero";
 import { RouteMap } from "./components/RouteMap";
 import { Timeline } from "./components/Timeline";
-import { HikingSection } from "./components/HikingSection";
+import { Accommodation } from "./components/Accommodation";
 import { Connections } from "./components/Connections";
 import { PackingList } from "./components/PackingList";
+import { Food } from "./components/Food";
 import { Tips } from "./components/Tips";
+import { Wildlife } from "./components/Wildlife";
 import { Weather } from "./components/Weather";
-import { KNOYDART_DAYS, MORVERN_DAYS, TRIP_META } from "./data/trip";
-import { formatTripDateRangeWithWeekdays, formatTripDateShort } from "./lib/dates";
+import { TripWeatherProvider } from "./context/TripWeatherContext";
+import { TRIP_META } from "./data/trip";
+import { formatTripDateRangeWithWeekdays } from "./lib/dates";
 
 export default function App() {
   return (
+    <TripWeatherProvider>
     <div className="h-screen flex bg-gray-950">
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
@@ -31,8 +35,8 @@ export default function App() {
                     TRIP_META.returnDate,
                   )}
                 />
-                <Row label="Knoydart traverse" value="Thu 9 – Sat 11 Jul · ~70 km · no Glenfinnan overnight" />
-                <Row label="Loch Shiel crossing" value="Same day as finish · Glenfinnan → Polloch ferry" />
+                <Row label="Knoydart traverse" value="Thu 9 – Sat 11 Jul · ~70 km · overnight Glenfinnan" />
+                <Row label="Loch Shiel crossing" value="Sun 12 Jul morning · Glenfinnan → Polloch ferry" />
                 <Row label="Morvern leg" value="1 hike day + bus & ferries to Oban" />
                 <Row label="Total on foot" value="~108 km over 5 days" />
                 <Row label="Midges" value="Peak season — net & Smidge essential" />
@@ -42,27 +46,13 @@ export default function App() {
 
           <Timeline />
 
-          <HikingSection
-            id="knoydart"
-            title="Knoydart · 3 days"
-            subtitle={`${formatTripDateShort("2026-07-09")} – ${formatTripDateShort("2026-07-11")} · Inverie → Glenfinnan · Mam Unndal & Glen Dessarry`}
-            days={KNOYDART_DAYS}
-            accentFrom="#6366f1"
-            accentTo="#818cf8"
-          />
-
-          <HikingSection
-            id="morvern"
-            title="Morvern → Oban"
-            subtitle={`${formatTripDateShort("2026-07-12")} – ${formatTripDateShort("2026-07-13")} · 1 day on foot, then bus & ferries`}
-            days={MORVERN_DAYS}
-            accentFrom="#0891b2"
-            accentTo="#22d3ee"
-          />
+          <Accommodation />
 
           <Connections />
           <PackingList />
+          <Food />
           <Weather />
+          <Wildlife />
           <Tips />
 
           <footer className="text-center text-xs text-gray-600 pb-4">
@@ -71,6 +61,7 @@ export default function App() {
         </main>
       </div>
     </div>
+    </TripWeatherProvider>
   );
 }
 

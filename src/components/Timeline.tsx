@@ -1,5 +1,5 @@
 import type { TimelineEvent, LegType } from "../data/trip";
-import { TIMELINE, TRIP_META } from "../data/trip";
+import { TIMELINE, TRIP_META, getHikingDay } from "../data/trip";
 import { getDayPhotos } from "../data/photos";
 import {
   formatTripDateLong,
@@ -7,6 +7,8 @@ import {
   formatTripDateShort,
 } from "../lib/dates";
 import { PhotoCarousel } from "./PhotoCarousel";
+import { DayWeatherStrip } from "./DayWeatherStrip";
+import { HikeDayDetails } from "./HikeDayDetails";
 import { Bus, Footprints, Hotel, Plane, Ship, Train } from "lucide-react";
 
 const TYPE_CONFIG: Record<
@@ -26,7 +28,7 @@ export function Timeline() {
     <section id="timeline">
       <SectionHeader
         title="Full itinerary"
-        subtitle={`${formatTripDateRangeWithWeekdays(TRIP_META.departureDate, TRIP_META.returnDate)} · 3-day Knoydart, no Glenfinnan stop, Morvern by bus & ferry`}
+        subtitle={`${formatTripDateRangeWithWeekdays(TRIP_META.departureDate, TRIP_META.returnDate)} · Knoydart traverse & Morvern leg`}
       />
       <div className="relative">
         <div
@@ -49,48 +51,73 @@ export function Timeline() {
 function TimelineItem({ event }: { event: TimelineEvent }) {
   const config = TYPE_CONFIG[event.type];
   const Icon = config.icon;
+  const hike = getHikingDay(event.dateIso, event.dayLabel);
+  const photos = hike ? [] : getDayPhotos(event.dateIso, event.dayLabel);
 
   return (
-    <div className="relative flex gap-4 pl-0">
-      <div
-        className={`relative z-10 flex items-center justify-center w-10 h-10 rounded-full shrink-0 ${config.bg}`}
-      >
-        <Icon className={`w-4 h-4 ${config.color}`} aria-hidden="true" />
-      </div>
-      <div className="flex-1 bg-gray-900 border border-gray-800 rounded-lg p-4 pb-3">
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <time
-            dateTime={event.dateIso}
-            className="text-xs font-medium text-indigo-400"
-          >
-            {formatTripDateShort(event.dateIso)}
-          </time>
-          <span className="text-xs text-gray-500">{event.dayLabel}</span>
+    <div className="space-y-2">
+      {event.segment && (
+        <div className="relative flex gap-4 pl-0">
+          <div className="w-10 shrink-0" aria-hidden="true" />
+          <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400 pt-1">
+            {event.segment}
+          </p>
         </div>
-        <p className="text-xs text-gray-600 mt-0.5">
-          {formatTripDateLong(event.dateIso)}
-        </p>
-        <h3 className="text-base font-semibold text-gray-100 mt-1">{event.title}</h3>
-        <p className="text-sm text-gray-400 mt-1">{event.description}</p>
-
-        <div className="mt-3">
-          <PhotoCarousel
-            photos={getDayPhotos(event.dateIso, event.dayLabel)}
-            label={`${event.title} photos`}
-            variant="compact"
-          />
+      )}
+      <div className="relative flex gap-4 pl-0">
+        <div
+          className={`relative z-10 flex items-center justify-center w-10 h-10 rounded-full shrink-0 ${config.bg}`}
+        >
+          <Icon className={`w-4 h-4 ${config.color}`} aria-hidden="true" />
         </div>
+        <div className="flex-1 bg-gray-900 border border-gray-800 rounded-lg p-4 pb-3">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <time
+              dateTime={event.dateIso}
+              className="text-xs font-medium text-indigo-400"
+            >
+              {formatTripDateShort(event.dateIso)}
+            </time>
+            <span className="text-xs text-gray-500">{event.dayLabel}</span>
+          </div>
+          <p className="text-xs text-gray-600 mt-0.5">
+            {formatTripDateLong(event.dateIso)}
+          </p>
+          <h3 className="text-base font-semibold text-gray-100 mt-1">
+            {event.title}
+          </h3>
+          <p className="text-sm text-gray-400 mt-1">{event.description}</p>
 
-        {event.details && (
-          <ul className="mt-2 space-y-1">
-            {event.details.map((d, i) => (
-              <li key={i} className="text-xs text-gray-500 flex items-start gap-1.5">
-                <span className="text-gray-600 mt-0.5">·</span>
-                {d}
-              </li>
-            ))}
-          </ul>
-        )}
+          <DayWeatherStrip dateIso={event.dateIso} dayLabel={event.dayLabel} />
+
+          {hike ? (
+            <HikeDayDetails day={hike} />
+          ) : (
+            photos.length > 0 && (
+              <div className="mt-3">
+                <PhotoCarousel
+                  photos={photos}
+                  label={`${event.title} photos`}
+                  variant="compact"
+                />
+              </div>
+            )
+          )}
+
+          {event.details && (
+            <ul className={`space-y-1 ${hike ? "mt-4" : "mt-2"}`}>
+              {event.details.map((d, i) => (
+                <li
+                  key={i}
+                  className="text-xs text-gray-500 flex items-start gap-1.5"
+                >
+                  <span className="text-gray-600 mt-0.5">·</span>
+                  {d}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );

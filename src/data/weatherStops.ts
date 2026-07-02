@@ -7,13 +7,21 @@ export interface WeatherStop {
   longitude: number;
 }
 
-/** One forecast row per trip day, matched to where you'll be on the trail. */
+/** One forecast row per timeline day — keyed by dateIso + dayLabel */
 export const WEATHER_STOPS: WeatherStop[] = [
   {
     dateIso: "2026-07-07",
     dayLabel: "Day 0",
     location: "Edinburgh",
-    context: "Arrival · city stay",
+    context: "Flight arrival",
+    latitude: 55.9533,
+    longitude: -3.1883,
+  },
+  {
+    dateIso: "2026-07-07",
+    dayLabel: "Stay",
+    location: "Edinburgh",
+    context: "Overnight · city centre",
     latitude: 55.9533,
     longitude: -3.1883,
   },
@@ -21,7 +29,15 @@ export const WEATHER_STOPS: WeatherStop[] = [
     dateIso: "2026-07-08",
     dayLabel: "Day 1",
     location: "Inverie",
-    context: "Train & ferry · trailhead",
+    context: "Train & ferry",
+    latitude: 57.0325,
+    longitude: -5.6814,
+  },
+  {
+    dateIso: "2026-07-08",
+    dayLabel: "Stay",
+    location: "Inverie",
+    context: "Overnight · Knoydart",
     latitude: 57.0325,
     longitude: -5.6814,
   },
@@ -50,6 +66,22 @@ export const WEATHER_STOPS: WeatherStop[] = [
     longitude: -5.4312,
   },
   {
+    dateIso: "2026-07-11",
+    dayLabel: "Stay",
+    location: "Glenfinnan",
+    context: "Overnight · hostel or campsite",
+    latitude: 56.8763,
+    longitude: -5.4312,
+  },
+  {
+    dateIso: "2026-07-12",
+    dayLabel: "Transit",
+    location: "Loch Shiel",
+    context: "Morning ferry Glenfinnan → Polloch",
+    latitude: 56.89,
+    longitude: -5.52,
+  },
+  {
     dateIso: "2026-07-12",
     dayLabel: "Hike 4",
     location: "Strontian",
@@ -62,6 +94,14 @@ export const WEATHER_STOPS: WeatherStop[] = [
     dayLabel: "Transit",
     location: "Oban",
     context: "Bus & ferries from Strontian",
+    latitude: 56.415,
+    longitude: -5.472,
+  },
+  {
+    dateIso: "2026-07-13",
+    dayLabel: "Stay",
+    location: "Oban",
+    context: "Overnight · town accommodation",
     latitude: 56.415,
     longitude: -5.472,
   },

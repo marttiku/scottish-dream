@@ -7,6 +7,8 @@ export interface TimelineEvent {
   description: string;
   type: LegType;
   details?: string[];
+  /** Section divider shown above this event */
+  segment?: string;
 }
 
 export interface HikingDay {
@@ -53,6 +55,9 @@ export const TRIP_META = {
   returnDate: "2026-07-14",
   totalHikingKm: "~108",
   hikingDays: 5,
+  wildCampNights: 3,
+  lodgedNights: 4,
+  route: "Inverie → Oban",
   tagline:
     "Tallinn to the wild Highlands — Inverie across Knoydart, then Morvern by boot and ferry to Oban.",
 };
@@ -64,7 +69,7 @@ export const TIMELINE: TimelineEvent[] = [
     title: "Tallinn → Edinburgh",
     description: "Evening flight. Check into accommodation near Waverley station.",
     type: "flight",
-    details: ["Allow time for baggage & transit to city centre"],
+    details: ["Allow time for baggage & transit to city centre", "See Stays → Edinburgh"],
   },
   {
     dateIso: "2026-07-08",
@@ -76,11 +81,13 @@ export const TIMELINE: TimelineEvent[] = [
     details: [
       "Edinburgh Waverley → Glasgow Queen Street → Mallaig (~6–7 h)",
       "Mallaig → Inverie ferry (~40 min) — book ahead in summer",
+      "Overnight in Inverie — see Stays",
     ],
   },
   {
     dateIso: "2026-07-09",
     dayLabel: "Hike 1",
+    segment: "Knoydart · 3 days",
     title: "Inverie → Sourlies",
     description: "Follow Loch Nevis west, then south to the remote camp at Sourlies.",
     type: "hike",
@@ -99,22 +106,26 @@ export const TIMELINE: TimelineEvent[] = [
     dayLabel: "Hike 3",
     title: "A' Chuil → Glenfinnan",
     description:
-      "Long final day through Glen Dessarry and Glen Finnan. Finish at the railway station — no overnight stop.",
+      "Long day through Glen Dessarry and Glen Finnan. Finish at the viaduct — overnight in Glenfinnan.",
     type: "hike",
-    details: ["~28–30 km · ~700 m ascent", "Afternoon train connection possible"],
+    details: ["~28–30 km · ~700 m ascent", "Overnight in Glenfinnan — see Stays"],
   },
   {
-    dateIso: "2026-07-11",
+    dateIso: "2026-07-12",
     dayLabel: "Transit",
     title: "Glenfinnan → Polloch",
     description:
-      "Same day: Loch Shiel ferry from Glenfinnan (or nearby pier) to Polloch — check seasonal timetable.",
+      "Morning Loch Shiel ferry to Polloch pontoon — check Wed/Sat timetable or arrange drop-off by phone.",
     type: "ferry",
-    details: ["No rest day at Glenfinnan", "Book ferry in advance"],
+    details: [
+      "Loch Shiel Highland Cruises — call +44 7498 501566",
+      "If no sailing: taxi to Acharacle + short walk to Polloch",
+    ],
   },
   {
     dateIso: "2026-07-12",
     dayLabel: "Hike 4",
+    segment: "Morvern → Oban",
     title: "Polloch → Strontian",
     description: "Estate tracks along Loch Shiel and into the Ardnamurchan peninsula.",
     type: "hike",
@@ -133,6 +144,7 @@ export const TIMELINE: TimelineEvent[] = [
       "Ferry Port Appin → Point/Lismore (~10 min, turn-up-and-go)",
       "Optional short walk on Lismore (~8 km north)",
       "CalMac Achnacroish → Oban (~1 h) — book ahead",
+      "Overnight in Oban — see Stays",
     ],
   },
   {
@@ -145,7 +157,7 @@ export const TIMELINE: TimelineEvent[] = [
   },
 ];
 
-export const KNOYDART_DAYS: HikingDay[] = [
+export const HIKING_DAYS: HikingDay[] = [
   {
     day: 1,
     dateIso: "2026-07-09",
@@ -203,11 +215,11 @@ export const KNOYDART_DAYS: HikingDay[] = [
     to: "Glenfinnan Station",
     distanceKm: "28–30",
     ascentM: 700,
-    camp: "— (finish day, no overnight)",
+    camp: "Glenfinnan (hostel, campsite, or B&B)",
     highlights: [
       "Glen Dessarry track walking",
       "Bealach an Lagain Duibh",
-      "Glenfinnan Viaduct & station",
+      "Glenfinnan Viaduct — overnight in village",
     ],
     elevationProfile: [
       { km: 0, alt: 80 },
@@ -218,9 +230,6 @@ export const KNOYDART_DAYS: HikingDay[] = [
     ],
     difficulty: "strenuous",
   },
-];
-
-export const MORVERN_DAYS: HikingDay[] = [
   {
     day: 4,
     dateIso: "2026-07-12",
@@ -270,6 +279,33 @@ export const MORVERN_DAYS: HikingDay[] = [
   },
 ];
 
+/** Derived trip totals for overview / hero stats */
+export function getTripStats() {
+  const totalAscentM = HIKING_DAYS.reduce((sum, day) => sum + day.ascentM, 0);
+  const start = new Date(`${TRIP_META.departureDate}T12:00:00`);
+  const end = new Date(`${TRIP_META.returnDate}T12:00:00`);
+  const calendarDays =
+    Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+  return {
+    totalAscentM,
+    calendarDays,
+    calendarNights: calendarDays - 1,
+    wildCampNights: TRIP_META.wildCampNights,
+    lodgedNights: TRIP_META.lodgedNights,
+    route: TRIP_META.route,
+  };
+}
+
+export function getHikingDay(
+  dateIso: string,
+  dayLabel: string,
+): HikingDay | undefined {
+  return HIKING_DAYS.find(
+    (d) => d.dateIso === dateIso && d.dayLabel === dayLabel,
+  );
+}
+
 export const CONNECTIONS: Connection[] = [
   {
     name: "Tallinn → Edinburgh",
@@ -315,9 +351,9 @@ export const CONNECTIONS: Connection[] = [
     operator: "Loch Shiel Highland Cruises",
     url: "https://www.highlandcruises.co.uk/cruises/the-loch-cruise-single-from-glenfinnan-to-acharacle-9-30am-11-55am/",
     timetableUrl: "https://www.highlandcruises.co.uk/cruises/",
-    schedule: "Sat 11 Jul: dep Glenfinnan 09:30 · Polloch ~10:45 (Wed & Sat only)",
+    schedule: "Sun 12 Jul: no regular sailing — call operator or taxi via Acharacle",
     notes: "Polloch drop-off by prior arrangement — call +44 7498 501566 before booking. Pier at Glenfinnan House Hotel.",
-    dateIso: "2026-07-11",
+    dateIso: "2026-07-12",
   },
   {
     name: "Strontian → Lochaline",
@@ -430,11 +466,10 @@ export const PACKING: PackingCategory[] = [
     name: "Food & Water",
     icon: "utensils",
     items: [
-      "5–6 days food (self-supported)",
-      "Lightweight stove & fuel",
+      "See Food section for full meal plan",
+      "Lightweight stove & fuel (~285 g kit)",
       "Water filter or purification tablets",
       "Electrolyte tablets",
-      "High-calorie snacks",
     ],
   },
   {

@@ -1,6 +1,18 @@
-import { TRIP_META } from "../data/trip";
-import { formatTripDateRange, formatTripDateShort } from "../lib/dates";
-import { Calendar, Footprints, MapPin, TrendingUp } from "lucide-react";
+import { TRIP_META, getTripStats } from "../data/trip";
+import {
+  formatTripDateLong,
+  formatTripDateRangeWithWeekdays,
+  formatTripDateShort,
+} from "../lib/dates";
+import {
+  ArrowRight,
+  Calendar,
+  Footprints,
+  MapPin,
+  Mountain,
+  Tent,
+  Timer,
+} from "lucide-react";
 
 function daysUntil(dateStr: string): number {
   const target = new Date(dateStr + "T00:00:00");
@@ -9,8 +21,16 @@ function daysUntil(dateStr: string): number {
   return Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 }
 
+function formatAscent(m: number): string {
+  return `~${m.toLocaleString("en-GB")} m`;
+}
+
 export function Hero() {
   const days = daysUntil(TRIP_META.departureDate);
+  const stats = getTripStats();
+
+  const countdown =
+    days > 0 ? `${days} days away` : days === 0 ? "Departs today" : "Underway";
 
   return (
     <section
@@ -39,29 +59,101 @@ export function Hero() {
         <p className="text-gray-400 mt-4 max-w-2xl text-lg leading-relaxed">
           {TRIP_META.tagline}
         </p>
-        <p className="text-sm text-gray-500 mt-2">
-          {formatTripDateRange(TRIP_META.departureDate, TRIP_META.returnDate)}
-        </p>
 
-        <div className="mt-8 flex flex-wrap gap-4">
+        <div className="mt-6 rounded-xl border border-gray-800 bg-gray-900/50 backdrop-blur px-4 py-4 sm:px-5 sm:py-5 max-w-2xl">
+          <p className="text-sm font-medium text-indigo-400">
+            {formatTripDateRangeWithWeekdays(
+              TRIP_META.departureDate,
+              TRIP_META.returnDate,
+            )}
+          </p>
+          <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+            <DateBlock
+              label="Depart"
+              dateIso={TRIP_META.departureDate}
+              hint={countdown}
+            />
+            <ArrowRight
+              className="hidden sm:block w-5 h-5 text-gray-600 shrink-0"
+              aria-hidden="true"
+            />
+            <DateBlock
+              label="Return"
+              dateIso={TRIP_META.returnDate}
+              hint="Evening flight to Tallinn"
+            />
+          </div>
+          <p className="mt-3 text-xs text-gray-500">
+            {stats.calendarDays} days · {stats.route} · Tallinn ↔ Edinburgh
+          </p>
+        </div>
+
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <StatCard
+            icon={Timer}
+            label="Duration"
+            value={`${stats.calendarDays} days`}
+            hint={`${stats.calendarNights} nights`}
+          />
+          <StatCard
+            icon={Footprints}
+            label="Hiking"
+            value={`${TRIP_META.hikingDays} days`}
+            hint="Knoydart 3 · Morvern 2"
+          />
+          <StatCard
+            icon={MapPin}
+            label="Distance"
+            value={TRIP_META.totalHikingKm + " km"}
+            hint="On foot"
+          />
+          <StatCard
+            icon={Mountain}
+            label="Ascent"
+            value={formatAscent(stats.totalAscentM)}
+            hint="Cumulative climb"
+          />
+          <StatCard
+            icon={Tent}
+            label="Wild camps"
+            value={`${stats.wildCampNights} nights`}
+            hint="Sourlies · A' Chuil · Strontian"
+          />
           <StatCard
             icon={Calendar}
-            label="Departure"
-            value={formatTripDateShort(TRIP_META.departureDate)}
-            hint={
-              days > 0
-                ? `${days} days away`
-                : days === 0
-                  ? "Today"
-                  : "Underway"
-            }
+            label="Lodged"
+            value={`${stats.lodgedNights} nights`}
+            hint="Edinburgh · Inverie · Glenfinnan · Oban"
           />
-          <StatCard icon={Footprints} label="Hiking days" value="5" />
-          <StatCard icon={MapPin} label="Trail distance" value={TRIP_META.totalHikingKm + " km"} />
-          <StatCard icon={TrendingUp} label="Knoydart" value="3 days" />
         </div>
       </div>
     </section>
+  );
+}
+
+function DateBlock({
+  label,
+  dateIso,
+  hint,
+}: {
+  label: string;
+  dateIso: string;
+  hint?: string;
+}) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+        {label}
+      </p>
+      <time
+        dateTime={dateIso}
+        className="text-lg font-semibold text-gray-100 mt-0.5 block"
+      >
+        {formatTripDateShort(dateIso)}
+      </time>
+      <p className="text-xs text-gray-500 mt-0.5">{formatTripDateLong(dateIso)}</p>
+      {hint && <p className="text-xs text-indigo-400/80 mt-1">{hint}</p>}
+    </div>
   );
 }
 
@@ -77,13 +169,13 @@ function StatCard({
   hint?: string;
 }) {
   return (
-    <div className="bg-gray-900/60 backdrop-blur border border-gray-800 rounded-lg px-4 py-3 min-w-[130px]">
+    <div className="bg-gray-900/60 backdrop-blur border border-gray-800 rounded-lg px-3 py-3 sm:px-4">
       <div className="flex items-center gap-2 text-gray-500 text-xs mb-1">
-        <Icon className="w-3.5 h-3.5" aria-hidden="true" />
+        <Icon className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
         {label}
       </div>
-      <p className="text-xl font-semibold text-gray-100">{value}</p>
-      {hint && <p className="text-xs text-gray-500 mt-0.5">{hint}</p>}
+      <p className="text-lg sm:text-xl font-semibold text-gray-100">{value}</p>
+      {hint && <p className="text-xs text-gray-500 mt-0.5 leading-snug">{hint}</p>}
     </div>
   );
 }
