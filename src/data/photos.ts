@@ -299,12 +299,12 @@ export const DAY_PHOTOS: Record<string, DayPhoto[]> = {
     {
       src: p(417083),
       alt: "Passenger ferry crossing a sea loch",
-      caption: "Port Appin → Lismore ferry",
+      caption: "CalMac Lochaline → Fishnish",
     },
     {
       src: p(417084),
-      alt: "Limestone cliffs on a small Scottish island",
-      caption: "Optional walk on Lismore (~8 km)",
+      alt: "Single-track road through open moorland",
+      caption: "West Coast Motors — Fishnish → Craignure",
     },
     {
       src: p(417085),

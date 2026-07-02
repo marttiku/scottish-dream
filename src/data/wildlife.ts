@@ -219,9 +219,9 @@ export const WILDLIFE_SPECIES: WildlifeSpecies[] = [
     id: "porpoise",
     name: "Harbour porpoise",
     latinName: "Phocoena phocoena",
-    route: "Port Appin · Lismore ferry · Oban Bay",
+    route: "Lochaline · Mull ferries · Oban Bay",
     summary:
-      "Small, shy cetaceans — triangular dorsal fin, no bow-riding. Watch from the Lismore and Oban ferries on calm days; a quick arc and blow is typical before they dive.",
+      "Small, shy cetaceans — triangular dorsal fin, no bow-riding. Watch from the Lochaline–Fishnish and Craignure–Oban ferries on calm days; a quick arc and blow is typical before they dive.",
     likelihood: "possible",
     photos: [
       {

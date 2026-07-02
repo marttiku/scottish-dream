@@ -38,7 +38,7 @@ export default function App() {
                 />
                 <Row label="Knoydart traverse" value="Thu 9 – Sat 11 Jul · ~70 km · overnight Glenfinnan" />
                 <Row label="Loch Shiel crossing" value="Sun 12 Jul morning · Glenfinnan → Polloch ferry" />
-                <Row label="Morvern leg" value="1 hike day + bus & ferries to Oban" />
+                <Row label="Morvern leg" value="1 hike day + bus & ferries via Mull to Oban" />
                 <Row label="Total on foot" value="~108 km over 5 days" />
                 <Row label="Midges" value="Peak season — net & Smidge essential" />
               </dl>

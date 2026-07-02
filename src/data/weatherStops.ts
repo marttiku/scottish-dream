@@ -93,7 +93,7 @@ export const WEATHER_STOPS: WeatherStop[] = [
     dateIso: "2026-07-13",
     dayLabel: "Transit",
     location: "Oban",
-    context: "Bus & ferries from Strontian",
+    context: "Bus & ferries via Mull",
     latitude: 56.415,
     longitude: -5.472,
   },

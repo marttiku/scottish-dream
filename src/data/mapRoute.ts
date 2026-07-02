@@ -102,12 +102,20 @@ export const MAP_POINTS: MapPoint[] = [
     note: "Mon 13 Jul · bus from Strontian",
   },
   {
-    id: "lismore",
-    name: "Lismore",
-    lat: 56.49,
-    lng: -5.635,
-    type: "trail",
-    note: "Mon 13 Jul · ferry & short walk",
+    id: "fishnish",
+    name: "Fishnish",
+    lat: 56.5378,
+    lng: -5.8172,
+    type: "transport",
+    note: "Mon 13 Jul · ferry from Lochaline",
+  },
+  {
+    id: "craignure",
+    name: "Craignure",
+    lat: 56.4722,
+    lng: -5.7044,
+    type: "transport",
+    note: "Mon 13 Jul · bus from Fishnish",
   },
   {
     id: "oban",
@@ -115,7 +123,7 @@ export const MAP_POINTS: MapPoint[] = [
     lat: 56.415,
     lng: -5.472,
     type: "city",
-    note: "Mon 13 Jul · ferry from Lismore",
+    note: "Mon 13 Jul · ferry from Craignure",
   },
 ];
 
@@ -151,7 +159,7 @@ export const MAP_ROUTES: MapRouteSegment[] = [
     label: "Bus & ferries",
     color: "#a78bfa",
     dashed: true,
-    pointIds: ["strontian", "lochaline", "lismore", "oban"],
+    pointIds: ["strontian", "lochaline", "fishnish", "craignure", "oban"],
   },
   {
     id: "return",

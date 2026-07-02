@@ -339,11 +339,11 @@ export const FOOD_DAY_PLANS: FoodDayPlan[] = [
   {
     dateIso: "2026-07-13",
     dayLabel: "Transit",
-    title: "Strontian → Oban",
+    title: "Strontian → Oban (via Mull)",
     targetKcal: 2800,
     resupply: "Strontian shop AM · Oban seafood dinner PM",
     notes:
-      "Light pack day — bus & ferries. Pool snacks; Oban seafood dinner for two in the evening.",
+      "Light pack day — bus & ferries across Mull. Pool snacks; Oban seafood dinner for two in the evening.",
     entries: [
       { itemId: "porridge-oats", qty: 1 },
       { itemId: "milk-powder", qty: 1 },

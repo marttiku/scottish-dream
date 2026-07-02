@@ -1,5 +1,13 @@
 /** Gear shopping list — products from MATKaSPORT (matkasport.ee) for 2 hikers. */
 
+import {
+  DECATHLON_ALTERNATIVES,
+  type GearAlternative,
+} from "./decathlonAlternatives";
+
+export type { GearAlternative };
+export { DECATHLON_ALTERNATIVES, DECATHLON_GEAR_META } from "./decathlonAlternatives";
+
 export const GEAR_PARTY = { hikers: 2 } as const;
 
 export const GEAR_SHOP_META = {
@@ -323,6 +331,23 @@ export interface GearShopSummary {
   hikers: number;
 }
 
+export interface GearAlternativeLine {
+  parentItem: GearShopItem;
+  alternative: GearAlternative;
+  qty: number;
+  lineTotalEur: number;
+  matkasportLineTotalEur: number;
+}
+
+export interface DecathlonGearSummary {
+  coreTotalEur: number;
+  coveredLineCount: number;
+  uncoveredCoreLineCount: number;
+  coreLineCount: number;
+  savingsOnCoveredLinesEur: number;
+  hikers: number;
+}
+
 export function getGearShopList(): GearLineItem[] {
   return GEAR_SHOP.map((item) => ({
     item,
@@ -354,6 +379,61 @@ export function getGearShopSummary(): GearShopSummary {
     itemCount,
     lineCount: lines.length,
     coreLineCount,
+    hikers: GEAR_PARTY.hikers,
+  };
+}
+
+export function pickRecommendedAlternative(
+  alternatives: GearAlternative[],
+): GearAlternative {
+  return alternatives.find((alt) => alt.recommended) ?? alternatives[0];
+}
+
+export function getDecathlonAlternatives(itemId: string): GearAlternative[] {
+  return DECATHLON_ALTERNATIVES[itemId] ?? [];
+}
+
+export function getDecathlonGearLines(): GearAlternativeLine[] {
+  const lines = getGearShopList();
+  const result: GearAlternativeLine[] = [];
+
+  for (const { item, lineTotalEur } of lines) {
+    if (item.optional) continue;
+    const alternatives = getDecathlonAlternatives(item.id);
+    if (alternatives.length === 0) continue;
+
+    const alternative = pickRecommendedAlternative(alternatives);
+    result.push({
+      parentItem: item,
+      alternative,
+      qty: item.qty,
+      lineTotalEur: Math.round(item.qty * alternative.unitPriceEur * 100) / 100,
+      matkasportLineTotalEur: lineTotalEur,
+    });
+  }
+
+  return result;
+}
+
+export function getDecathlonGearSummary(): DecathlonGearSummary {
+  const coreLines = getGearShopList().filter(({ item }) => !item.optional);
+  const decathlonLines = getDecathlonGearLines();
+
+  let coreTotalEur = 0;
+  let matkasportCoveredTotalEur = 0;
+
+  for (const line of decathlonLines) {
+    coreTotalEur += line.lineTotalEur;
+    matkasportCoveredTotalEur += line.matkasportLineTotalEur;
+  }
+
+  return {
+    coreTotalEur: Math.round(coreTotalEur * 100) / 100,
+    coveredLineCount: decathlonLines.length,
+    uncoveredCoreLineCount: coreLines.length - decathlonLines.length,
+    coreLineCount: coreLines.length,
+    savingsOnCoveredLinesEur:
+      Math.round((matkasportCoveredTotalEur - coreTotalEur) * 100) / 100,
     hikers: GEAR_PARTY.hikers,
   };
 }
