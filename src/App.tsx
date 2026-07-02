@@ -6,7 +6,9 @@ import { HikingSection } from "./components/HikingSection";
 import { Connections } from "./components/Connections";
 import { PackingList } from "./components/PackingList";
 import { Tips } from "./components/Tips";
-import { KNOYDART_DAYS, MORVERN_DAYS } from "./data/trip";
+import { Weather } from "./components/Weather";
+import { KNOYDART_DAYS, MORVERN_DAYS, TRIP_META } from "./data/trip";
+import { formatTripDateRangeWithWeekdays, formatTripDateShort } from "./lib/dates";
 
 export default function App() {
   return (
@@ -22,7 +24,14 @@ export default function App() {
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 flex flex-col justify-center">
               <h3 className="text-sm font-semibold text-gray-100">Trip shape</h3>
               <dl className="mt-4 space-y-3 text-sm">
-                <Row label="Knoydart traverse" value="3 days · ~70 km · no Glenfinnan overnight" />
+                <Row
+                  label="Dates"
+                  value={formatTripDateRangeWithWeekdays(
+                    TRIP_META.departureDate,
+                    TRIP_META.returnDate,
+                  )}
+                />
+                <Row label="Knoydart traverse" value="Thu 9 – Sat 11 Jul · ~70 km · no Glenfinnan overnight" />
                 <Row label="Loch Shiel crossing" value="Same day as finish · Glenfinnan → Polloch ferry" />
                 <Row label="Morvern leg" value="1 hike day + bus & ferries to Oban" />
                 <Row label="Total on foot" value="~108 km over 5 days" />
@@ -36,7 +45,7 @@ export default function App() {
           <HikingSection
             id="knoydart"
             title="Knoydart · 3 days"
-            subtitle="Inverie → Glenfinnan · Mam Unndal & Glen Dessarry"
+            subtitle={`${formatTripDateShort("2026-07-09")} – ${formatTripDateShort("2026-07-11")} · Inverie → Glenfinnan · Mam Unndal & Glen Dessarry`}
             days={KNOYDART_DAYS}
             accentFrom="#6366f1"
             accentTo="#818cf8"
@@ -45,7 +54,7 @@ export default function App() {
           <HikingSection
             id="morvern"
             title="Morvern → Oban"
-            subtitle="1 day on foot, then bus & ferries — skips the long peninsula crossing"
+            subtitle={`${formatTripDateShort("2026-07-12")} – ${formatTripDateShort("2026-07-13")} · 1 day on foot, then bus & ferries`}
             days={MORVERN_DAYS}
             accentFrom="#0891b2"
             accentTo="#22d3ee"
@@ -53,10 +62,11 @@ export default function App() {
 
           <Connections />
           <PackingList />
+          <Weather />
           <Tips />
 
           <footer className="text-center text-xs text-gray-600 pb-4">
-            Scottish Dream · Knoydart & Morvern · July 2026
+            Scottish Dream · {formatTripDateRangeWithWeekdays(TRIP_META.departureDate, TRIP_META.returnDate)}
           </footer>
         </main>
       </div>

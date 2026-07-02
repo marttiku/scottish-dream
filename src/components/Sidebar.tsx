@@ -9,6 +9,7 @@ import {
   Train,
   Mountain,
   Info,
+  CloudSun,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -18,6 +19,7 @@ const NAV_ITEMS = [
   { id: "morvern", label: "Morvern", icon: Map },
   { id: "connections", label: "Connections", icon: Train },
   { id: "packing", label: "Packing", icon: Package },
+  { id: "weather", label: "Weather", icon: CloudSun },
   { id: "tips", label: "Tips", icon: Info },
 ] as const;
 
@@ -26,7 +28,7 @@ export function Sidebar() {
     <aside className="hidden lg:flex flex-col w-64 shrink-0 bg-gray-900 border-r border-gray-800 h-screen sticky top-0">
       <div className="p-6 border-b border-gray-800">
         <h1 className="text-lg font-semibold text-gray-100">Scottish Dream</h1>
-        <p className="text-xs text-gray-500 mt-1">Highland Trek · Jul 2026</p>
+        <p className="text-xs text-gray-500 mt-1">7–14 Jul 2026</p>
       </div>
       <nav className="flex-1 p-4 space-y-1">
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => (

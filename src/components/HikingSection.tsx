@@ -1,4 +1,7 @@
 import type { HikingDay } from "../data/trip";
+import { getHikePhotos } from "../data/photos";
+import { formatTripDateLong, formatTripDateShort } from "../lib/dates";
+import { PhotoCarousel } from "./PhotoCarousel";
 import {
   Area,
   AreaChart,
@@ -70,9 +73,18 @@ function DayCard({
       <div className="p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <span className="text-xs font-medium text-indigo-400">
-              Day {day.day}
-            </span>
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <time
+                dateTime={day.dateIso}
+                className="text-xs font-medium text-indigo-400"
+              >
+                {formatTripDateShort(day.dateIso)}
+              </time>
+              <span className="text-xs text-gray-600">· Day {day.day}</span>
+            </div>
+            <p className="text-xs text-gray-600 mt-0.5">
+              {formatTripDateLong(day.dateIso)}
+            </p>
             <h3 className="text-lg font-semibold text-gray-100 mt-0.5">
               {day.title}
             </h3>
@@ -101,6 +113,14 @@ function DayCard({
             </li>
           ))}
         </ul>
+
+        <div className="mt-5">
+          <p className="text-xs text-gray-500 mb-2">Photos</p>
+          <PhotoCarousel
+            photos={getHikePhotos(day.dateIso, day.dayLabel)}
+            label={`${day.title} photos`}
+          />
+        </div>
 
         <div className="mt-5 h-36">
           <p className="text-xs text-gray-500 mb-2">Elevation profile (approx.)</p>

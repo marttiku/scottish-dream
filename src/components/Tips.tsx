@@ -4,7 +4,7 @@ import { SectionHeader } from "./Timeline";
 export function Tips() {
   return (
     <section id="tips">
-      <SectionHeader title="Weather & tips" subtitle="July in the Highlands" />
+      <SectionHeader title="Weather & tips" subtitle="Trail advice for the Highlands" />
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {TIPS.map((tip) => (
           <div

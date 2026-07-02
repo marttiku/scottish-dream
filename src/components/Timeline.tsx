@@ -1,5 +1,12 @@
 import type { TimelineEvent, LegType } from "../data/trip";
-import { TIMELINE } from "../data/trip";
+import { TIMELINE, TRIP_META } from "../data/trip";
+import { getDayPhotos } from "../data/photos";
+import {
+  formatTripDateLong,
+  formatTripDateRangeWithWeekdays,
+  formatTripDateShort,
+} from "../lib/dates";
+import { PhotoCarousel } from "./PhotoCarousel";
 import { Bus, Footprints, Hotel, Plane, Ship, Train } from "lucide-react";
 
 const TYPE_CONFIG: Record<
@@ -19,7 +26,7 @@ export function Timeline() {
     <section id="timeline">
       <SectionHeader
         title="Full itinerary"
-        subtitle="Tue 7 Jul – Tue 14 Jul · 3-day Knoydart, no Glenfinnan stop, Morvern by bus & ferry"
+        subtitle={`${formatTripDateRangeWithWeekdays(TRIP_META.departureDate, TRIP_META.returnDate)} · 3-day Knoydart, no Glenfinnan stop, Morvern by bus & ferry`}
       />
       <div className="relative">
         <div
@@ -27,8 +34,11 @@ export function Timeline() {
           aria-hidden="true"
         />
         <div className="space-y-4">
-          {TIMELINE.map((event, i) => (
-            <TimelineItem key={i} event={event} />
+          {TIMELINE.map((event) => (
+            <TimelineItem
+              key={`${event.dateIso}-${event.dayLabel}`}
+              event={event}
+            />
           ))}
         </div>
       </div>
@@ -49,11 +59,28 @@ function TimelineItem({ event }: { event: TimelineEvent }) {
       </div>
       <div className="flex-1 bg-gray-900 border border-gray-800 rounded-lg p-4 pb-3">
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <span className="text-xs font-medium text-indigo-400">{event.date}</span>
+          <time
+            dateTime={event.dateIso}
+            className="text-xs font-medium text-indigo-400"
+          >
+            {formatTripDateShort(event.dateIso)}
+          </time>
           <span className="text-xs text-gray-500">{event.dayLabel}</span>
         </div>
+        <p className="text-xs text-gray-600 mt-0.5">
+          {formatTripDateLong(event.dateIso)}
+        </p>
         <h3 className="text-base font-semibold text-gray-100 mt-1">{event.title}</h3>
         <p className="text-sm text-gray-400 mt-1">{event.description}</p>
+
+        <div className="mt-3">
+          <PhotoCarousel
+            photos={getDayPhotos(event.dateIso, event.dayLabel)}
+            label={`${event.title} photos`}
+            variant="compact"
+          />
+        </div>
+
         {event.details && (
           <ul className="mt-2 space-y-1">
             {event.details.map((d, i) => (

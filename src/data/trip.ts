@@ -1,7 +1,7 @@
 export type LegType = "flight" | "train" | "ferry" | "bus" | "hike" | "stay";
 
 export interface TimelineEvent {
-  date: string;
+  dateIso: string;
   dayLabel: string;
   title: string;
   description: string;
@@ -11,6 +11,8 @@ export interface TimelineEvent {
 
 export interface HikingDay {
   day: number;
+  dateIso: string;
+  dayLabel: string;
   title: string;
   from: string;
   to: string;
@@ -28,8 +30,14 @@ export interface Connection {
   route: string;
   duration: string;
   operator: string;
+  /** Primary link — booking or journey planner */
   url: string;
+  /** Direct timetable or schedule page */
+  timetableUrl?: string;
+  /** Typical or trip-relevant departures */
+  schedule?: string;
   notes: string;
+  dateIso?: string;
 }
 
 export interface PackingCategory {
@@ -38,18 +46,11 @@ export interface PackingCategory {
   items: string[];
 }
 
-export interface Waypoint {
-  id: string;
-  name: string;
-  x: number;
-  y: number;
-  type: "city" | "trail" | "camp" | "transport";
-}
-
 export const TRIP_META = {
   title: "Scottish Dream",
   subtitle: "Knoydart & Morvern · July 2026",
   departureDate: "2026-07-07",
+  returnDate: "2026-07-14",
   totalHikingKm: "~108",
   hikingDays: 5,
   tagline:
@@ -58,7 +59,7 @@ export const TRIP_META = {
 
 export const TIMELINE: TimelineEvent[] = [
   {
-    date: "Tue 7 Jul",
+    dateIso: "2026-07-07",
     dayLabel: "Day 0",
     title: "Tallinn → Edinburgh",
     description: "Evening flight. Check into accommodation near Waverley station.",
@@ -66,7 +67,7 @@ export const TIMELINE: TimelineEvent[] = [
     details: ["Allow time for baggage & transit to city centre"],
   },
   {
-    date: "Wed 8 Jul",
+    dateIso: "2026-07-08",
     dayLabel: "Day 1",
     title: "Edinburgh → Mallaig → Inverie",
     description:
@@ -78,7 +79,7 @@ export const TIMELINE: TimelineEvent[] = [
     ],
   },
   {
-    date: "Thu 9 Jul",
+    dateIso: "2026-07-09",
     dayLabel: "Hike 1",
     title: "Inverie → Sourlies",
     description: "Follow Loch Nevis west, then south to the remote camp at Sourlies.",
@@ -86,7 +87,7 @@ export const TIMELINE: TimelineEvent[] = [
     details: ["~18 km · ~600 m ascent", "Camp on Loch Nevis shore"],
   },
   {
-    date: "Fri 10 Jul",
+    dateIso: "2026-07-10",
     dayLabel: "Hike 2",
     title: "Sourlies → A' Chuil (Glen Dessarry)",
     description: "Cross Mam Unndal — one of Knoydart's finest and quietest passes.",
@@ -94,7 +95,7 @@ export const TIMELINE: TimelineEvent[] = [
     details: ["~24 km · ~900 m ascent", "Camp near A' Chuil Bothy"],
   },
   {
-    date: "Sat 11 Jul",
+    dateIso: "2026-07-11",
     dayLabel: "Hike 3",
     title: "A' Chuil → Glenfinnan",
     description:
@@ -103,7 +104,7 @@ export const TIMELINE: TimelineEvent[] = [
     details: ["~28–30 km · ~700 m ascent", "Afternoon train connection possible"],
   },
   {
-    date: "Sat 11 Jul",
+    dateIso: "2026-07-11",
     dayLabel: "Transit",
     title: "Glenfinnan → Polloch",
     description:
@@ -112,7 +113,7 @@ export const TIMELINE: TimelineEvent[] = [
     details: ["No rest day at Glenfinnan", "Book ferry in advance"],
   },
   {
-    date: "Sun 12 Jul",
+    dateIso: "2026-07-12",
     dayLabel: "Hike 4",
     title: "Polloch → Strontian",
     description: "Estate tracks along Loch Shiel and into the Ardnamurchan peninsula.",
@@ -120,21 +121,22 @@ export const TIMELINE: TimelineEvent[] = [
     details: ["~26 km · ~500 m ascent", "Camp near Strontian"],
   },
   {
-    date: "Mon 13 Jul",
+    dateIso: "2026-07-13",
     dayLabel: "Transit",
     title: "Strontian → Lochaline → Lismore → Oban",
     description:
       "Skip the long Morvern crossing on foot — bus to Lochaline, ferries via Lismore to Oban.",
     type: "bus",
     details: [
-      "West Coast Motors 506: Strontian → Lochaline (~30 min)",
-      "Ferry Lochaline → Lismore (passenger ferry, seasonal)",
+      "Shiel Buses 507: Strontian → Lochaline (~30 min) — check summer timetable",
+      "Taxi Lochaline → Port Appin (~30 min, no public bus)",
+      "Ferry Port Appin → Point/Lismore (~10 min, turn-up-and-go)",
       "Optional short walk on Lismore (~8 km north)",
-      "Ferry Achnacroish → Oban (~1 h)",
+      "CalMac Achnacroish → Oban (~1 h) — book ahead",
     ],
   },
   {
-    date: "Tue 14 Jul",
+    dateIso: "2026-07-14",
     dayLabel: "Return",
     title: "Oban → Edinburgh → Tallinn",
     description: "ScotRail to Glasgow, onward to Edinburgh. Evening flight home.",
@@ -146,6 +148,8 @@ export const TIMELINE: TimelineEvent[] = [
 export const KNOYDART_DAYS: HikingDay[] = [
   {
     day: 1,
+    dateIso: "2026-07-09",
+    dayLabel: "Hike 1",
     title: "Inverie → Sourlies",
     from: "Inverie",
     to: "Sourlies",
@@ -168,6 +172,8 @@ export const KNOYDART_DAYS: HikingDay[] = [
   },
   {
     day: 2,
+    dateIso: "2026-07-10",
+    dayLabel: "Hike 2",
     title: "Sourlies → A' Chuil",
     from: "Sourlies",
     to: "A' Chuil Bothy",
@@ -190,6 +196,8 @@ export const KNOYDART_DAYS: HikingDay[] = [
   },
   {
     day: 3,
+    dateIso: "2026-07-11",
+    dayLabel: "Hike 3",
     title: "A' Chuil → Glenfinnan",
     from: "A' Chuil",
     to: "Glenfinnan Station",
@@ -215,6 +223,8 @@ export const KNOYDART_DAYS: HikingDay[] = [
 export const MORVERN_DAYS: HikingDay[] = [
   {
     day: 4,
+    dateIso: "2026-07-12",
+    dayLabel: "Hike 4",
     title: "Polloch → Strontian",
     from: "Polloch",
     to: "Strontian",
@@ -237,6 +247,8 @@ export const MORVERN_DAYS: HikingDay[] = [
   },
   {
     day: 5,
+    dateIso: "2026-07-13",
+    dayLabel: "Transit",
     title: "Strontian → Oban (via public transport)",
     from: "Strontian",
     to: "Oban",
@@ -245,7 +257,7 @@ export const MORVERN_DAYS: HikingDay[] = [
     camp: "Oban accommodation",
     highlights: [
       "Bus skips ~25 km of road walking",
-      "Lochaline → Lismore ferry",
+      "Port Appin → Lismore ferry",
       "Limestone island & sea views",
       "Achnacroish → Oban ferry into town",
     ],
@@ -260,58 +272,88 @@ export const MORVERN_DAYS: HikingDay[] = [
 
 export const CONNECTIONS: Connection[] = [
   {
-    name: "Tallinn ↔ Edinburgh",
+    name: "Tallinn → Edinburgh",
     mode: "flight",
     route: "TLL → EDI",
     duration: "~2 h 45 min",
-    operator: "Check airlines (Ryanair, airBaltic, etc.)",
-    url: "https://www.skyscanner.net",
-    notes: "Book Tue evening outbound, return from Edinburgh ~1 week later.",
+    operator: "Ryanair · airBaltic",
+    url: "https://www.google.com/travel/flights?q=flights%20from%20TLL%20to%20EDI%20on%202026-07-07",
+    timetableUrl: "https://www.tallinn-airport.ee/en/flights/departures/",
+    schedule: "Evening departures typical — check airline sites",
+    notes: "Book direct with airline for easiest changes. Allow time for baggage & tram to city centre.",
+    dateIso: "2026-07-07",
   },
   {
     name: "Edinburgh → Mallaig",
     mode: "train",
-    route: "EDI → GLC → Mallaig",
-    duration: "~6–7 h",
+    route: "Waverley → Queen St → Mallaig",
+    duration: "~6 h 25 min",
     operator: "ScotRail · West Highland Line",
-    url: "https://www.scotrail.co.uk",
-    notes: "One of the world's great railway journeys. Reserve seats in summer.",
+    url: "https://www.scotrail.co.uk/plan/journey?origin=Edinburgh%20(Waverley)&destination=Mallaig&outwardDate=2026-07-08",
+    timetableUrl: "https://www.scotrail.co.uk/train-times/edinburgh-waverley-to-mallaig",
+    schedule: "Wed 8 Jul: first ~07:15 · last ~17:15 · change at Glasgow Queen Street",
+    notes: "No direct trains — reserve seats in summer. Jacobite steam train shares the line (does not stop Inverie).",
+    dateIso: "2026-07-08",
   },
   {
     name: "Mallaig → Inverie",
     mode: "ferry",
     route: "Mallaig → Inverie",
-    duration: "~40 min",
-    operator: "Western Isles Cruises / Knoydart Seabridge",
-    url: "https://www.knoydart-ferry.co.uk",
-    notes: "Several sailings daily in summer. Essential booking.",
+    duration: "~25–40 min",
+    operator: "Western Isles Cruises",
+    url: "https://westernislescruises.co.uk/cruises/",
+    timetableUrl: "https://westernislescruises.co.uk/knoydart-ferry-timetable/",
+    schedule: "Wed 8 Jul: 07:30, 10:15, 14:15, 18:00 from Mallaig (Apr–Oct timetable)",
+    notes: "Book online — essential in summer. Arrive 15 min early. Sailings weather dependent.",
+    dateIso: "2026-07-08",
   },
   {
     name: "Glenfinnan → Polloch",
     mode: "ferry",
-    route: "Glenfinnan Pier → Polloch",
-    duration: "~1 h",
-    operator: "Loch Shiel Cruise / local ferry",
-    url: "https://www.cruise-lochshiel.co.uk",
-    notes: "Seasonal — confirm timetable. Alternative: taxi to Acharacle + shorter walk.",
+    route: "Glenfinnan Pier → Polloch pontoon",
+    duration: "~1 h 15 min to Polloch",
+    operator: "Loch Shiel Highland Cruises",
+    url: "https://www.highlandcruises.co.uk/cruises/the-loch-cruise-single-from-glenfinnan-to-acharacle-9-30am-11-55am/",
+    timetableUrl: "https://www.highlandcruises.co.uk/cruises/",
+    schedule: "Sat 11 Jul: dep Glenfinnan 09:30 · Polloch ~10:45 (Wed & Sat only)",
+    notes: "Polloch drop-off by prior arrangement — call +44 7498 501566 before booking. Pier at Glenfinnan House Hotel.",
+    dateIso: "2026-07-11",
   },
   {
     name: "Strontian → Lochaline",
     mode: "bus",
-    route: "Strontian → Lochaline",
-    duration: "~30 min",
-    operator: "West Coast Motors 506",
-    url: "https://www.westcoastmotors.co.uk",
-    notes: "Replaces a full day of road walking across Morvern.",
+    route: "Strontian Village Green → Lochaline Slipway",
+    duration: "~35 min",
+    operator: "Shiel Buses · route 507",
+    url: "https://shielbuses.co.uk/route-507",
+    timetableUrl: "https://shielbuses.co.uk/route-507",
+    schedule: "Mon 13 Jul: FW→Lochaline via Strontian ~16:15 arr. (school-holiday column — verify)",
+    notes: "Lochaline–Fort William service. Board at Strontian Village Green when bus diverts. Replaces a full day of road walking.",
+    dateIso: "2026-07-13",
   },
   {
-    name: "Lochaline → Lismore",
+    name: "Lochaline → Port Appin",
+    mode: "bus",
+    route: "Lochaline → Port Appin (A861)",
+    duration: "~30 min drive",
+    operator: "Local taxi (pre-book)",
+    url: "https://www.alistairstaxis.co.uk/ferry-terminal-taxi-transfers",
+    schedule: "No public bus — allow ~30 min by road along Loch Linnhe",
+    notes: "Required link before the Lismore ferry. Thistle Taxis Appin 07584 177132 · Alistair's Taxis Fort William 01397 252525.",
+    dateIso: "2026-07-13",
+  },
+  {
+    name: "Port Appin → Lismore",
     mode: "ferry",
-    route: "Lochaline → Point",
+    route: "Port Appin → Point (north Lismore)",
     duration: "~10 min",
-    operator: "Lochaline Ferry (passenger)",
-    url: "https://www.calmac.co.uk",
-    notes: "Small passenger ferry. Check summer schedule.",
+    operator: "Argyll & Bute Council",
+    url: "https://lismoreferry.argyll-bute.gov.uk/",
+    timetableUrl:
+      "https://www.argyll-bute.gov.uk/sites/default/files/2026-02/PortAppin-LismoreTimetable-1stJune2026to31Oct2026.pdf",
+    schedule: "Mon 13 Jul: sailings from 07:00, roughly hourly until 20:00 (Jun–Oct 2026 PDF)",
+    notes: "Turn-up-and-go foot passenger ferry. Buy tickets online or at pier. Cycles carried free.",
+    dateIso: "2026-07-13",
   },
   {
     name: "Lismore → Oban",
@@ -319,17 +361,35 @@ export const CONNECTIONS: Connection[] = [
     route: "Achnacroish → Oban",
     duration: "~1 h",
     operator: "CalMac",
-    url: "https://www.calmac.co.uk",
-    notes: "Regular service. Arrives in Oban town centre.",
+    url: "https://www.calmac.co.uk/book-tickets#/sailings?route=oban-lismore&passengers=1",
+    timetableUrl: "https://www.calmac.co.uk/en-gb/route-information/oban-lismore/",
+    schedule: "Mon 13 Jul: multiple daily sailings — check summer timetable & tidal amendments",
+    notes: "Book ahead even as foot passenger. Jul 14–19 on tidal amendment list — double-check sailing times.",
+    dateIso: "2026-07-13",
   },
   {
     name: "Oban → Edinburgh",
     mode: "train",
-    route: "OBN → GLC → EDI",
-    duration: "~4 h",
+    route: "Oban → Queen St → Waverley",
+    duration: "~4 h 45 min",
     operator: "ScotRail",
-    url: "https://www.scotrail.co.uk",
-    notes: "Via Glasgow Queen Street. Allow connection time.",
+    url: "https://www.scotrail.co.uk/plan/journey?origin=Oban&destination=Edinburgh%20(Waverley)&outwardDate=2026-07-14",
+    timetableUrl: "https://www.scotrail.co.uk/train-times/oban-to-edinburgh-waverley",
+    schedule: "Tue 14 Jul: first ~05:17 · last ~20:39 · change at Glasgow Queen Street",
+    notes: "Allow connection time in Glasgow for evening flight. Advance tickets cheaper.",
+    dateIso: "2026-07-14",
+  },
+  {
+    name: "Edinburgh → Tallinn",
+    mode: "flight",
+    route: "EDI → TLL",
+    duration: "~2 h 45 min",
+    operator: "Ryanair · airBaltic",
+    url: "https://www.google.com/travel/flights?q=flights%20from%20EDI%20to%20TLL%20on%202026-07-14",
+    timetableUrl: "https://www.edinburghairport.com/flights/live-flight-arrivals-departures",
+    schedule: "Evening departures typical — coordinate with Oban train arrival",
+    notes: "Book direct with airline. Tram or taxi from Waverley to airport (~30 min).",
+    dateIso: "2026-07-14",
   },
 ];
 
@@ -401,46 +461,10 @@ export const PACKING: PackingCategory[] = [
   },
 ];
 
-export const WAYPOINTS: Waypoint[] = [
-  { id: "tallinn", name: "Tallinn", x: 920, y: 280, type: "city" },
-  { id: "edinburgh", name: "Edinburgh", x: 680, y: 420, type: "city" },
-  { id: "mallaig", name: "Mallaig", x: 380, y: 320, type: "transport" },
-  { id: "inverie", name: "Inverie", x: 320, y: 350, type: "trail" },
-  { id: "sourlies", name: "Sourlies", x: 280, y: 380, type: "camp" },
-  { id: "achuil", name: "A' Chuil", x: 340, y: 400, type: "camp" },
-  { id: "glenfinnan", name: "Glenfinnan", x: 400, y: 360, type: "transport" },
-  { id: "polloch", name: "Polloch", x: 360, y: 440, type: "trail" },
-  { id: "strontian", name: "Strontian", x: 300, y: 480, type: "camp" },
-  { id: "lochaline", name: "Lochaline", x: 260, y: 500, type: "transport" },
-  { id: "lismore", name: "Lismore", x: 220, y: 520, type: "trail" },
-  { id: "oban", name: "Oban", x: 180, y: 480, type: "city" },
-];
-
-export const ROUTE_SEGMENTS = [
-  {
-    id: "knoydart",
-    label: "Knoydart (3 days)",
-    color: "#6366f1",
-    points: ["inverie", "sourlies", "achuil", "glenfinnan"],
-  },
-  {
-    id: "morvern",
-    label: "Morvern (1 day + PT)",
-    color: "#22d3ee",
-    points: ["glenfinnan", "polloch", "strontian"],
-  },
-  {
-    id: "transport",
-    label: "Bus & ferries",
-    color: "#a78bfa",
-    points: ["strontian", "lochaline", "lismore", "oban"],
-  },
-];
-
 export const TIPS = [
   {
     title: "July weather",
-    body: "Expect 15–20 °C days, 8–12 °C nights, and at least one rainy day. Strong wind on passes can feel near freezing.",
+    body: "See the live trip forecast for rain and wind on each day. On exposed passes, strong wind can feel near freezing even in July.",
   },
   {
     title: "Midges",
@@ -460,6 +484,6 @@ export const TIPS = [
   },
   {
     title: "Book ahead",
-    body: "Trains, Mallaig–Inverie ferry, Loch Shiel crossing, and CalMac sailings all benefit from advance booking in summer.",
+    body: "Trains, Mallaig–Inverie ferry, Loch Shiel crossing, Port Appin–Lismore ferry, and CalMac sailings all benefit from advance booking in summer.",
   },
 ];

@@ -1,4 +1,5 @@
 import { TRIP_META } from "../data/trip";
+import { formatTripDateRange, formatTripDateShort } from "../lib/dates";
 import { Calendar, Footprints, MapPin, TrendingUp } from "lucide-react";
 
 function daysUntil(dateStr: string): number {
@@ -38,12 +39,22 @@ export function Hero() {
         <p className="text-gray-400 mt-4 max-w-2xl text-lg leading-relaxed">
           {TRIP_META.tagline}
         </p>
+        <p className="text-sm text-gray-500 mt-2">
+          {formatTripDateRange(TRIP_META.departureDate, TRIP_META.returnDate)}
+        </p>
 
         <div className="mt-8 flex flex-wrap gap-4">
           <StatCard
             icon={Calendar}
             label="Departure"
-            value={days > 0 ? `${days} days` : days === 0 ? "Today!" : "Underway"}
+            value={formatTripDateShort(TRIP_META.departureDate)}
+            hint={
+              days > 0
+                ? `${days} days away`
+                : days === 0
+                  ? "Today"
+                  : "Underway"
+            }
           />
           <StatCard icon={Footprints} label="Hiking days" value="5" />
           <StatCard icon={MapPin} label="Trail distance" value={TRIP_META.totalHikingKm + " km"} />
@@ -58,10 +69,12 @@ function StatCard({
   icon: Icon,
   label,
   value,
+  hint,
 }: {
   icon: typeof Calendar;
   label: string;
   value: string;
+  hint?: string;
 }) {
   return (
     <div className="bg-gray-900/60 backdrop-blur border border-gray-800 rounded-lg px-4 py-3 min-w-[130px]">
@@ -70,6 +83,7 @@ function StatCard({
         {label}
       </div>
       <p className="text-xl font-semibold text-gray-100">{value}</p>
+      {hint && <p className="text-xs text-gray-500 mt-0.5">{hint}</p>}
     </div>
   );
 }
