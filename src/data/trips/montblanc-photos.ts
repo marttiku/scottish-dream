@@ -62,7 +62,7 @@ export const MONTBLANC_DAY_PHOTOS: Record<string, DayPhoto[]> = {
     {
       src: p(1366919),
       alt: "Alpine pasture in the Val Ferret",
-      caption: "Low route via La Giettaz",
+      caption: "Swiss Val Ferret via Praz-de-Fort",
     },
   ],
   "2026-07-11::Hike 4": [

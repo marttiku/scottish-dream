@@ -108,7 +108,7 @@ export const montblancTrip: TripData = {
       segment: "TMB · Stage 3",
       title: "Champex-Lac → La Fouly",
       description:
-        "Low route via La Giettaz — avoid Fenêtre d'Arpette unless equipped for snow.",
+        "Easy Swiss Val Ferret valley walk via Praz-de-Fort and Issert.",
       type: "hike",
       details: [
         "~18 km · ~750 m ascent · 6–7 h",
@@ -127,7 +127,7 @@ export const montblancTrip: TripData = {
       details: [
         "~20 km · ~1,350 m ascent · 8–9 h",
         "Start early — afternoon storms on the col",
-        "Rifugio Bonatti — book at rifugiobonatti.com",
+        "Rifugio Bonatti — book at rifugiobonatti.it",
       ],
     },
     {
@@ -141,7 +141,7 @@ export const montblancTrip: TripData = {
       details: [
         "~18 km · ~900 m ascent · 7–8 h",
         "SAVDA bus along Val Ferret optional",
-        "Rifugio Elisabetta — book at rifugioelisabetta.it",
+        "Rifugio Elisabetta — book at rifugioelisabetta.com",
       ],
     },
     {
@@ -259,8 +259,8 @@ export const montblancTrip: TripData = {
       ascentM: 750,
       camp: "Auberge Maya-Joie",
       highlights: [
-        "La Giettaz village",
-        "Val Ferret approach",
+        "Praz-de-Fort hamlet",
+        "Swiss Val Ferret approach",
         "Swiss Valais hamlet",
         "Fondue at the gîte",
       ],
@@ -550,7 +550,7 @@ export const montblancTrip: TripData = {
   tips: [
     {
       title: "Refuge bookings",
-      body: "Book French & Swiss gîtes on montourdumontblanc.com/planning. Bonatti and Elisabetta are off-platform — reserve at rifugiobonatti.com and rifugioelisabetta.it.",
+      body: "Book French & Swiss gîtes on montourdumontblanc.com/planning. Bonatti and Elisabetta are off-platform — reserve at rifugiobonatti.it (form opens 26 May 2026) and rifugioelisabetta.com.",
     },
     {
       title: "Early starts",
