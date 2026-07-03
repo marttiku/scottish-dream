@@ -3,11 +3,13 @@ import type { TripData } from "../types";
 import { scotlandTrip } from "./scotland";
 import { tatrasTrip } from "./tatras";
 import { laplandTrip } from "./lapland";
+import { montblancTrip } from "./montblanc";
 
 export const TRIPS: Record<string, TripData> = {
   scotland: scotlandTrip,
   tatras: tatrasTrip,
   lapland: laplandTrip,
+  montblanc: montblancTrip,
 };
 
 export const TRIP_LIST = Object.values(TRIPS);
@@ -37,4 +39,5 @@ export const TRIP_LABELS: Record<string, string> = {
   scotland: "Scotland",
   tatras: "Tatras",
   lapland: "Lapland",
+  montblanc: "Mont Blanc",
 };

@@ -100,7 +100,9 @@ export function Sidebar() {
           {tripId === "lapland" ? (
             <Ship className="w-3.5 h-3.5" aria-hidden="true" />
           ) : null}
-          {tripId === "tatras" || tripId === "lapland" ? (
+          {tripId === "tatras" ||
+          tripId === "lapland" ||
+          tripId === "montblanc" ? (
             <Car className="w-3.5 h-3.5" aria-hidden="true" />
           ) : (
             <>

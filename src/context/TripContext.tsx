@@ -21,6 +21,7 @@ const TRIP_TITLES: Record<string, string> = {
   scotland: "Scottish Dream · Highland Trek 2026",
   tatras: "Tatra Dream · High Tatras 2026",
   lapland: "Arctic Dream · Lapland 2026",
+  montblanc: "Mont Blanc Dream · TMB 2026",
 };
 
 interface TripContextValue {

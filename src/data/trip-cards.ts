@@ -43,6 +43,18 @@ export const TRIP_CARDS: Record<string, TripCard> = {
       "Ferry to Helsinki · drive through Lapland",
     ],
   },
+  montblanc: {
+    id: "montblanc",
+    image: wikimediaThumb(
+      "a/a7/Glacier_du_Mont_Mallet_%28Glacier_du_G%C3%A9ant%29_%26_Mont_Blanc%2C_2010_July.jpg/1280px-Glacier_du_Mont_Mallet_%28Glacier_du_G%C3%A9ant%29_%26_Mont_Blanc%2C_2010_July.jpg",
+    ),
+    imageAlt: "Mont Blanc massif above the Glacier du Géant",
+    highlights: [
+      "Tour du Mont Blanc — France, Italy & Switzerland",
+      "Grand Col Ferret · Rifugio Bonatti",
+      "Lac Blanc finale above Chamonix",
+    ],
+  },
 };
 
 export function getTripCard(id: string): TripCard | undefined {

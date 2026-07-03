@@ -46,7 +46,9 @@ export function Hero() {
           hint:
             tripId === "lapland"
               ? "STF huts · Abisko to Kebnekaise"
-              : "Zelené pleso · Zbojnícka · Popradské",
+              : tripId === "montblanc"
+                ? "Elisabetta · Bonatti · Swiss refuges"
+                : "Zelené pleso · Zbojnícka · Popradské",
         }
       : {
           icon: Tent,
