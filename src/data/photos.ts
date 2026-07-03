@@ -5,17 +5,32 @@ export interface DayPhoto {
   caption?: string;
 }
 
-function u(id: string): string {
+/** Unsplash photo by id (photo-{id}) */
+export function unsplashPhoto(id: string): string {
   return `https://images.unsplash.com/photo-${id}?w=1200&q=80`;
 }
 
-function p(id: number): string {
+/** Pexels photo by numeric id */
+export function pexelsPhoto(id: number): string {
   return `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=1200`;
 }
 
 /** Wikimedia Commons 1280px thumbnail */
-function w(path: string): string {
+export function wikimediaThumb(path: string): string {
   return `https://upload.wikimedia.org/wikipedia/commons/thumb/${path}`;
+}
+
+function u(id: string): string {
+  return unsplashPhoto(id);
+}
+
+function p(id: number): string {
+  return pexelsPhoto(id);
+}
+
+/** Wikimedia Commons 1280px thumbnail */
+function w(path: string): string {
+  return wikimediaThumb(path);
 }
 
 /** Key: `${dateIso}::${dayLabel}` — one carousel per timeline day */

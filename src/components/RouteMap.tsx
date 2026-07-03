@@ -1,15 +1,9 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import {
-  MAP_BOUNDS,
-  MAP_CENTER,
-  MAP_POINTS,
-  MAP_ROUTES,
-  TYPE_COLORS,
-  resolveRouteCoords,
-  type MapPoint,
-} from "../data/mapRoute";
+import { TYPE_COLORS, type MapPoint } from "../data/mapRoute";
+import { resolveRouteCoords } from "../data/trips";
+import { useTrip } from "../context/TripContext";
 
 function makeMarker(point: MapPoint): L.CircleMarker {
   const color = TYPE_COLORS[point.type];
@@ -32,21 +26,26 @@ function makeMarker(point: MapPoint): L.CircleMarker {
 }
 
 export function RouteMap() {
+  const { trip, tripId } = useTrip();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || mapRef.current) return;
+    if (!el) return;
+
+    if (mapRef.current) {
+      mapRef.current.remove();
+      mapRef.current = null;
+    }
 
     const map = L.map(el, {
-      center: MAP_CENTER,
+      center: trip.mapCenter,
       zoom: 9,
       scrollWheelZoom: false,
       zoomControl: true,
     });
 
-    // Avoid hijacking page scroll — zoom with wheel only when map is focused
     map.on("click", () => map.scrollWheelZoom.enable());
     map.on("mouseout", () => map.scrollWheelZoom.disable());
 
@@ -60,8 +59,8 @@ export function RouteMap() {
       },
     ).addTo(map);
 
-    for (const segment of MAP_ROUTES) {
-      const coords = resolveRouteCoords(segment);
+    for (const segment of trip.mapRoutes) {
+      const coords = resolveRouteCoords(trip.mapPoints, segment);
       if (coords.length < 2) continue;
 
       L.polyline(coords, {
@@ -74,11 +73,11 @@ export function RouteMap() {
       }).addTo(map);
     }
 
-    for (const point of MAP_POINTS) {
+    for (const point of trip.mapPoints) {
       makeMarker(point).addTo(map);
     }
 
-    map.fitBounds(MAP_BOUNDS, { padding: [28, 28] });
+    map.fitBounds(trip.mapBounds, { padding: [28, 28] });
 
     mapRef.current = map;
 
@@ -92,19 +91,17 @@ export function RouteMap() {
       map.remove();
       mapRef.current = null;
     };
-  }, []);
+  }, [trip, tripId]);
 
   return (
     <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div>
           <h3 className="text-sm font-semibold text-gray-100">Route map</h3>
-          <p className="text-xs text-gray-500 mt-0.5">
-            OpenStreetMap · Knoydart & Morvern corridor
-          </p>
+          <p className="text-xs text-gray-500 mt-0.5">{trip.meta.mapSubtitle}</p>
         </div>
         <a
-          href="https://www.openstreetmap.org/#map=9/56.75/-5.35"
+          href={trip.meta.mapOsmUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs text-indigo-400 hover:text-indigo-300 shrink-0"
@@ -117,25 +114,27 @@ export function RouteMap() {
         ref={containerRef}
         className="route-map h-72 sm:h-80 w-full rounded-lg overflow-hidden border border-gray-800 z-0"
         role="application"
-        aria-label="Interactive map of the Scottish Dream trek route"
+        aria-label={trip.meta.mapAriaLabel}
       />
 
       <div className="flex flex-wrap gap-x-4 gap-y-2 mt-3 text-xs text-gray-400">
-        {MAP_ROUTES.filter((s) => !s.id.includes("return")).map((seg) => (
-          <div key={seg.id} className="flex items-center gap-1.5">
-            <span
-              className="w-4 h-0.5 rounded"
-              style={{
-                backgroundColor: seg.color,
-                opacity: seg.dashed ? 0.7 : 1,
-                backgroundImage: seg.dashed
-                  ? `repeating-linear-gradient(90deg, ${seg.color} 0 4px, transparent 4px 7px)`
-                  : undefined,
-              }}
-            />
-            {seg.label}
-          </div>
-        ))}
+        {trip.mapRoutes
+          .filter((s) => !s.id.includes("return") && !s.id.includes("travel-out"))
+          .map((seg) => (
+            <div key={seg.id} className="flex items-center gap-1.5">
+              <span
+                className="w-4 h-0.5 rounded"
+                style={{
+                  backgroundColor: seg.color,
+                  opacity: seg.dashed ? 0.7 : 1,
+                  backgroundImage: seg.dashed
+                    ? `repeating-linear-gradient(90deg, ${seg.color} 0 4px, transparent 4px 7px)`
+                    : undefined,
+                }}
+              />
+              {seg.label}
+            </div>
+          ))}
       </div>
 
       <div className="flex flex-wrap gap-3 mt-2 text-[10px] text-gray-500">

@@ -1,6 +1,6 @@
-import type { TimelineEvent, LegType } from "../data/trip";
-import { TIMELINE, TRIP_META, getHikingDay } from "../data/trip";
-import { getDayPhotos } from "../data/photos";
+import type { TimelineEvent, LegType } from "../data/types";
+import { getDayPhotos, getHikingDay } from "../data/types";
+import { useTrip } from "../context/TripContext";
 import {
   formatTripDateLong,
   formatTripDateRangeWithWeekdays,
@@ -9,7 +9,7 @@ import {
 import { PhotoCarousel } from "./PhotoCarousel";
 import { DayWeatherStrip } from "./DayWeatherStrip";
 import { HikeDayDetails } from "./HikeDayDetails";
-import { Bus, Footprints, Hotel, Plane, Ship, Train } from "lucide-react";
+import { Bus, Car, Footprints, Hotel, Plane, Ship, Train } from "lucide-react";
 
 const TYPE_CONFIG: Record<
   LegType,
@@ -19,16 +19,20 @@ const TYPE_CONFIG: Record<
   train: { icon: Train, color: "text-yellow-400", bg: "bg-yellow-500/20" },
   ferry: { icon: Ship, color: "text-cyan-400", bg: "bg-cyan-500/20" },
   bus: { icon: Bus, color: "text-orange-400", bg: "bg-orange-500/20" },
+  car: { icon: Car, color: "text-purple-400", bg: "bg-purple-500/20" },
   hike: { icon: Footprints, color: "text-indigo-400", bg: "bg-indigo-500/20" },
   stay: { icon: Hotel, color: "text-gray-400", bg: "bg-gray-500/20" },
 };
 
 export function Timeline() {
+  const { trip } = useTrip();
+  const { meta, timeline, hikingDays, dayPhotos } = trip;
+
   return (
     <section id="timeline">
       <SectionHeader
         title="Full itinerary"
-        subtitle={`${formatTripDateRangeWithWeekdays(TRIP_META.departureDate, TRIP_META.returnDate)} · Knoydart traverse & Morvern leg`}
+        subtitle={`${formatTripDateRangeWithWeekdays(meta.departureDate, meta.returnDate)} · ${meta.timelineSubtitle}`}
       />
       <div className="relative">
         <div
@@ -36,10 +40,12 @@ export function Timeline() {
           aria-hidden="true"
         />
         <div className="space-y-4">
-          {TIMELINE.map((event) => (
+          {timeline.map((event) => (
             <TimelineItem
               key={`${event.dateIso}-${event.dayLabel}`}
               event={event}
+              hikingDays={hikingDays}
+              dayPhotos={dayPhotos}
             />
           ))}
         </div>
@@ -48,11 +54,19 @@ export function Timeline() {
   );
 }
 
-function TimelineItem({ event }: { event: TimelineEvent }) {
+function TimelineItem({
+  event,
+  hikingDays,
+  dayPhotos,
+}: {
+  event: TimelineEvent;
+  hikingDays: Parameters<typeof getHikingDay>[0];
+  dayPhotos: Parameters<typeof getDayPhotos>[0];
+}) {
   const config = TYPE_CONFIG[event.type];
   const Icon = config.icon;
-  const hike = getHikingDay(event.dateIso, event.dayLabel);
-  const photos = hike ? [] : getDayPhotos(event.dateIso, event.dayLabel);
+  const hike = getHikingDay(hikingDays, event.dateIso, event.dayLabel);
+  const photos = hike ? [] : getDayPhotos(dayPhotos, event.dateIso, event.dayLabel);
 
   return (
     <div className="space-y-2">
@@ -91,7 +105,7 @@ function TimelineItem({ event }: { event: TimelineEvent }) {
           <DayWeatherStrip dateIso={event.dateIso} dayLabel={event.dayLabel} />
 
           {hike ? (
-            <HikeDayDetails day={hike} />
+            <HikeDayDetails day={hike} dayPhotos={dayPhotos} />
           ) : (
             photos.length > 0 && (
               <div className="mt-3">

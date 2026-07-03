@@ -1,27 +1,43 @@
-import { CONNECTIONS } from "../data/trip";
-import type { LegType } from "../data/trip";
+import type { LegType } from "../data/types";
+import { useTrip } from "../context/TripContext";
 import { formatTripDateLong, formatTripDateShort } from "../lib/dates";
 import { SectionHeader } from "./Timeline";
-import { Bus, Calendar, ExternalLink, Footprints, Plane, Ship, Train } from "lucide-react";
+import {
+  Bus,
+  Calendar,
+  Car,
+  ExternalLink,
+  Footprints,
+  Hotel,
+  Plane,
+  Ship,
+  Train,
+} from "lucide-react";
 
 const MODE_ICONS: Record<LegType, typeof Plane> = {
   flight: Plane,
   train: Train,
   ferry: Ship,
   bus: Bus,
+  car: Car,
   hike: Footprints,
-  stay: Train,
+  stay: Hotel,
 };
 
 export function Connections() {
+  const { trip, tripId } = useTrip();
+  const subtitle =
+    tripId === "lapland"
+      ? "Ferry, rental car, STF huts & Nikkaluokta bus — links for your travel dates"
+      : tripId === "tatras"
+        ? "Flights, rental car & Tatra railway — links for your travel dates"
+        : "Flights, trains, ferries & bus — timetable links for your travel dates";
+
   return (
     <section id="connections">
-      <SectionHeader
-        title="Connections"
-        subtitle="Flights, trains, ferries & bus — timetable links for your travel dates"
-      />
+      <SectionHeader title="Connections" subtitle={subtitle} />
       <div className="grid gap-3 sm:grid-cols-2">
-        {CONNECTIONS.map((conn) => {
+        {trip.connections.map((conn) => {
           const Icon = MODE_ICONS[conn.mode];
           return (
             <article

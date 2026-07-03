@@ -1,12 +1,12 @@
 import { ExternalLink, Hotel } from "lucide-react";
 import {
-  OVERNIGHT_STAYS,
   accommodationTypeLabel,
   type AccommodationOption,
   type AccommodationType,
   type OvernightStay,
 } from "../data/accommodation";
-import { getDayPhotos } from "../data/photos";
+import { getDayPhotos } from "../data/types";
+import { useTrip } from "../context/TripContext";
 import { formatTripDateLong, formatTripDateShort } from "../lib/dates";
 import { DayWeatherStrip } from "./DayWeatherStrip";
 import { PhotoCarousel } from "./PhotoCarousel";
@@ -17,51 +17,70 @@ const TYPE_STYLES: Record<AccommodationType, string> = {
   hostel: "bg-indigo-500/20 text-indigo-300",
   "b&b": "bg-pink-500/20 text-pink-300",
   lodge: "bg-amber-500/20 text-amber-300",
+  hut: "bg-cyan-500/20 text-cyan-300",
   campsite: "bg-green-500/20 text-green-300",
   bunkhouse: "bg-orange-500/20 text-orange-300",
   "wild-camp": "bg-cyan-500/20 text-cyan-300",
 };
 
+function isTrailStay(stay: OvernightStay): boolean {
+  return stay.options.some(
+    (o) => o.type === "hut" || o.type === "wild-camp",
+  );
+}
+
 export function Accommodation() {
-  const lodging = OVERNIGHT_STAYS.filter((s) =>
-    ["edinburgh-7", "inverie-8", "glenfinnan-11", "oban-13"].includes(s.id),
-  );
-  const trail = OVERNIGHT_STAYS.filter((s) =>
-    ["sourlies-9", "achuil-10", "strontian-12"].includes(s.id),
-  );
+  const { trip, tripId } = useTrip();
+  const { overnightStays, dayPhotos } = trip;
+
+  const lodging = overnightStays.filter((s) => !isTrailStay(s));
+  const trail = overnightStays.filter(isTrailStay);
+
+  const trailLabel = tripId === "tatras" ? "Mountain huts" : "Trail camps";
+  const subtitle =
+    tripId === "tatras"
+      ? "Hotels at Štrbské Pleso & mountain huts on the circuit"
+      : "Hotels, hostels, lodges & trail camps — one card per night";
 
   return (
     <section id="stays">
-      <SectionHeader
-        title="Overnight stays"
-        subtitle="Hotels, hostels, lodges & trail camps — one card per night"
-      />
+      <SectionHeader title="Overnight stays" subtitle={subtitle} />
 
-      <h3 className="text-sm font-semibold text-gray-300 mb-3">Lodging</h3>
-      <div className="grid gap-4 sm:grid-cols-2 mb-8">
-        {lodging.map((stay) => (
-          <StayCard key={stay.id} stay={stay} />
-        ))}
-      </div>
+      {lodging.length > 0 && (
+        <>
+          <h3 className="text-sm font-semibold text-gray-300 mb-3">Lodging</h3>
+          <div className="grid gap-4 sm:grid-cols-2 mb-8">
+            {lodging.map((stay) => (
+              <StayCard key={stay.id} stay={stay} dayPhotos={dayPhotos} />
+            ))}
+          </div>
+        </>
+      )}
 
-      <h3 className="text-sm font-semibold text-gray-300 mb-3">Trail camps</h3>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {trail.map((stay) => (
-          <StayCard key={stay.id} stay={stay} compact />
-        ))}
-      </div>
+      {trail.length > 0 && (
+        <>
+          <h3 className="text-sm font-semibold text-gray-300 mb-3">{trailLabel}</h3>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {trail.map((stay) => (
+              <StayCard key={stay.id} stay={stay} dayPhotos={dayPhotos} compact />
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }
 
 function StayCard({
   stay,
+  dayPhotos,
   compact = false,
 }: {
   stay: OvernightStay;
+  dayPhotos: Record<string, import("../data/photos").DayPhoto[]>;
   compact?: boolean;
 }) {
-  const photos = getDayPhotos(stay.dateIso, stay.weatherDayLabel);
+  const photos = getDayPhotos(dayPhotos, stay.dateIso, stay.weatherDayLabel);
 
   return (
     <article className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden flex flex-col">

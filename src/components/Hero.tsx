@@ -1,4 +1,5 @@
-import { TRIP_META, getTripStats } from "../data/trip";
+import { getTripStats } from "../data/types";
+import { useTrip } from "../context/TripContext";
 import {
   formatTripDateLong,
   formatTripDateRangeWithWeekdays,
@@ -6,8 +7,10 @@ import {
 } from "../lib/dates";
 import {
   ArrowRight,
+  BedDouble,
   Calendar,
   Footprints,
+  Home,
   MapPin,
   Mountain,
   Tent,
@@ -26,11 +29,31 @@ function formatAscent(m: number): string {
 }
 
 export function Hero() {
-  const days = daysUntil(TRIP_META.departureDate);
-  const stats = getTripStats();
+  const { trip, tripId } = useTrip();
+  const { meta } = trip;
+  const days = daysUntil(meta.departureDate);
+  const stats = getTripStats(meta, trip.hikingDays);
 
   const countdown =
     days > 0 ? `${days} days away` : days === 0 ? "Departs today" : "Underway";
+
+  const secondaryStat =
+    meta.hutNights != null && meta.hutNights > 0
+      ? {
+          icon: Home,
+          label: "Hut nights",
+          value: `${meta.hutNights} nights`,
+          hint:
+            tripId === "lapland"
+              ? "STF huts · Abisko to Kebnekaise"
+              : "Zelené pleso · Zbojnícka · Popradské",
+        }
+      : {
+          icon: Tent,
+          label: "Wild camps",
+          value: `${stats.wildCampNights} nights`,
+          hint: "Sourlies · A' Chuil · Strontian",
+        };
 
   return (
     <section
@@ -51,26 +74,26 @@ export function Hero() {
       />
       <div className="relative px-6 py-12 sm:px-10 sm:py-16">
         <p className="text-indigo-400 text-sm font-medium tracking-wide uppercase">
-          {TRIP_META.subtitle}
+          {meta.subtitle}
         </p>
         <h2 className="text-4xl sm:text-5xl font-bold text-gray-100 mt-2 tracking-tight">
-          {TRIP_META.title}
+          {meta.title}
         </h2>
         <p className="text-gray-400 mt-4 max-w-2xl text-lg leading-relaxed">
-          {TRIP_META.tagline}
+          {meta.tagline}
         </p>
 
         <div className="mt-6 rounded-xl border border-gray-800 bg-gray-900/50 backdrop-blur px-4 py-4 sm:px-5 sm:py-5 max-w-2xl">
           <p className="text-sm font-medium text-indigo-400">
             {formatTripDateRangeWithWeekdays(
-              TRIP_META.departureDate,
-              TRIP_META.returnDate,
+              meta.departureDate,
+              meta.returnDate,
             )}
           </p>
           <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
             <DateBlock
               label="Depart"
-              dateIso={TRIP_META.departureDate}
+              dateIso={meta.departureDate}
               hint={countdown}
             />
             <ArrowRight
@@ -79,12 +102,12 @@ export function Hero() {
             />
             <DateBlock
               label="Return"
-              dateIso={TRIP_META.returnDate}
-              hint="Evening flight to Tallinn"
+              dateIso={meta.returnDate}
+              hint={meta.returnHint}
             />
           </div>
           <p className="mt-3 text-xs text-gray-500">
-            {stats.calendarDays} days · {stats.route} · Tallinn ↔ Edinburgh
+            {stats.calendarDays} days · {stats.route} · {meta.transportLabel}
           </p>
         </div>
 
@@ -98,13 +121,13 @@ export function Hero() {
           <StatCard
             icon={Footprints}
             label="Hiking"
-            value={`${TRIP_META.hikingDays} days`}
-            hint="Knoydart 3 · Morvern 2"
+            value={`${meta.hikingDays} days`}
+            hint={meta.hikingStatHint}
           />
           <StatCard
             icon={MapPin}
             label="Distance"
-            value={TRIP_META.totalHikingKm + " km"}
+            value={meta.totalHikingKm + " km"}
             hint="On foot"
           />
           <StatCard
@@ -114,16 +137,16 @@ export function Hero() {
             hint="Cumulative climb"
           />
           <StatCard
-            icon={Tent}
-            label="Wild camps"
-            value={`${stats.wildCampNights} nights`}
-            hint="Sourlies · A' Chuil · Strontian"
+            icon={secondaryStat.icon}
+            label={secondaryStat.label}
+            value={secondaryStat.value}
+            hint={secondaryStat.hint}
           />
           <StatCard
-            icon={Calendar}
+            icon={BedDouble}
             label="Lodged"
             value={`${stats.lodgedNights} nights`}
-            hint="Edinburgh · Inverie · Glenfinnan · Oban"
+            hint={meta.lodgedHint}
           />
         </div>
       </div>

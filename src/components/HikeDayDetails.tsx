@@ -1,5 +1,6 @@
-import type { HikingDay } from "../data/trip";
-import { getHikePhotos } from "../data/photos";
+import type { HikingDay } from "../data/types";
+import { getDayPhotos } from "../data/types";
+import type { DayPhoto } from "../data/photos";
 import { PhotoCarousel } from "./PhotoCarousel";
 import {
   Area,
@@ -16,7 +17,13 @@ const DIFFICULTY_STYLES = {
   strenuous: "bg-red-500/20 text-red-400",
 };
 
-export function HikeDayDetails({ day }: { day: HikingDay }) {
+export function HikeDayDetails({
+  day,
+  dayPhotos,
+}: {
+  day: HikingDay;
+  dayPhotos: Record<string, DayPhoto[]>;
+}) {
   return (
     <div className="mt-4 pt-4 border-t border-gray-800">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
@@ -89,12 +96,14 @@ export function HikeDayDetails({ day }: { day: HikingDay }) {
         </ResponsiveContainer>
       </div>
 
+      {getDayPhotos(dayPhotos, day.dateIso, day.dayLabel).length > 0 && (
       <div className="mt-4">
         <PhotoCarousel
-          photos={getHikePhotos(day.dateIso, day.dayLabel)}
+          photos={getDayPhotos(dayPhotos, day.dateIso, day.dayLabel)}
           label={`${day.title} photos`}
         />
       </div>
+      )}
     </div>
   );
 }

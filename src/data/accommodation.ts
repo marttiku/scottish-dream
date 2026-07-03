@@ -3,6 +3,7 @@ export type AccommodationType =
   | "hostel"
   | "b&b"
   | "lodge"
+  | "hut"
   | "campsite"
   | "bunkhouse"
   | "wild-camp";
@@ -32,6 +33,7 @@ const TYPE_LABELS: Record<AccommodationType, string> = {
   hostel: "Hostel",
   "b&b": "B&B",
   lodge: "Lodge",
+  hut: "Mountain hut",
   campsite: "Campsite",
   bunkhouse: "Bunkhouse",
   "wild-camp": "Wild camp",

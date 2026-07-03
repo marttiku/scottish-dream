@@ -1,8 +1,5 @@
-import {
-  WILDLIFE_SPECIES,
-  wildlifeLikelihoodLabel,
-  type WildlifeLikelihood,
-} from "../data/wildlife";
+import { wildlifeLikelihoodLabel, type WildlifeLikelihood } from "../data/wildlife";
+import { useTrip } from "../context/TripContext";
 import { PhotoCarousel } from "./PhotoCarousel";
 import { SectionHeader } from "./Timeline";
 
@@ -13,14 +10,14 @@ const LIKELIHOOD_STYLES: Record<WildlifeLikelihood, string> = {
 };
 
 export function Wildlife() {
+  const { trip } = useTrip();
+  const { meta, wildlife } = trip;
+
   return (
     <section id="wildlife">
-      <SectionHeader
-        title="Wildlife"
-        subtitle="What to watch for along Inverie → Oban — dawn and dusk are best"
-      />
+      <SectionHeader title="Wildlife" subtitle={meta.wildlifeSubtitle} />
       <div className="grid gap-4 sm:grid-cols-2">
-        {WILDLIFE_SPECIES.map((species) => (
+        {wildlife.map((species) => (
           <article
             key={species.id}
             className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden flex flex-col"
@@ -59,8 +56,8 @@ export function Wildlife() {
         ))}
       </div>
       <p className="text-xs text-gray-600 mt-4 text-center">
-        Keep distance · never feed wild animals · dogs on lead near livestock &
-        ground-nesting birds · photos via Wikimedia Commons (CC)
+        Keep distance · never feed wild animals · respect livestock & reindeer
+        herding · photos via Wikimedia Commons (CC)
       </p>
     </section>
   );

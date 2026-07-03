@@ -1,52 +1,17 @@
-export type LegType = "flight" | "train" | "ferry" | "bus" | "hike" | "stay";
+import type {
+  Connection,
+  HikingDay,
+  PackingCategory,
+  TimelineEvent,
+} from "./types";
 
-export interface TimelineEvent {
-  dateIso: string;
-  dayLabel: string;
-  title: string;
-  description: string;
-  type: LegType;
-  details?: string[];
-  /** Section divider shown above this event */
-  segment?: string;
-}
-
-export interface HikingDay {
-  day: number;
-  dateIso: string;
-  dayLabel: string;
-  title: string;
-  from: string;
-  to: string;
-  distanceKm: string;
-  ascentM: number;
-  camp: string;
-  highlights: string[];
-  elevationProfile: { km: number; alt: number }[];
-  difficulty: "moderate" | "challenging" | "strenuous";
-}
-
-export interface Connection {
-  name: string;
-  mode: LegType;
-  route: string;
-  duration: string;
-  operator: string;
-  /** Primary link — booking or journey planner */
-  url: string;
-  /** Direct timetable or schedule page */
-  timetableUrl?: string;
-  /** Typical or trip-relevant departures */
-  schedule?: string;
-  notes: string;
-  dateIso?: string;
-}
-
-export interface PackingCategory {
-  name: string;
-  icon: string;
-  items: string[];
-}
+export type {
+  Connection,
+  HikingDay,
+  LegType,
+  PackingCategory,
+  TimelineEvent,
+} from "./types";
 
 export const TRIP_META = {
   title: "Scottish Dream",
@@ -293,24 +258,6 @@ export const HIKING_DAYS: HikingDay[] = [
     difficulty: "moderate",
   },
 ];
-
-/** Derived trip totals for overview / hero stats */
-export function getTripStats() {
-  const totalAscentM = HIKING_DAYS.reduce((sum, day) => sum + day.ascentM, 0);
-  const start = new Date(`${TRIP_META.departureDate}T12:00:00`);
-  const end = new Date(`${TRIP_META.returnDate}T12:00:00`);
-  const calendarDays =
-    Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-
-  return {
-    totalAscentM,
-    calendarDays,
-    calendarNights: calendarDays - 1,
-    wildCampNights: TRIP_META.wildCampNights,
-    lodgedNights: TRIP_META.lodgedNights,
-    route: TRIP_META.route,
-  };
-}
 
 export function getHikingDay(
   dateIso: string,

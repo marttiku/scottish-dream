@@ -1,4 +1,5 @@
 import { createContext, useContext, type ReactNode } from "react";
+import { useTrip } from "./TripContext";
 import { useTripWeather, type StopWeather } from "../hooks/useTripWeather";
 import type { DailyForecast } from "../lib/openMeteo";
 
@@ -14,7 +15,8 @@ interface TripWeatherContextValue {
 const TripWeatherContext = createContext<TripWeatherContextValue | null>(null);
 
 export function TripWeatherProvider({ children }: { children: ReactNode }) {
-  const weather = useTripWeather();
+  const { trip } = useTrip();
+  const weather = useTripWeather(trip.weatherStops);
 
   const getForecast = (dateIso: string, dayLabel: string) => {
     const match = weather.stops.find(

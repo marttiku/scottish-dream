@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { WEATHER_STOPS, type WeatherStop } from "../data/weatherStops";
+import type { WeatherStop } from "../data/weatherStops";
 import {
   fetchForecastsForStops,
   lookupDay,
@@ -18,7 +18,7 @@ interface TripWeatherState {
   fetchedAt: Date | null;
 }
 
-export function useTripWeather() {
+export function useTripWeather(weatherStops: WeatherStop[]) {
   const [state, setState] = useState<TripWeatherState>({
     stops: [],
     loading: true,
@@ -30,8 +30,8 @@ export function useTripWeather() {
     setState((s) => ({ ...s, loading: true, error: null }));
 
     try {
-      const forecasts = await fetchForecastsForStops(WEATHER_STOPS);
-      const stops: StopWeather[] = WEATHER_STOPS.map((stop) => ({
+      const forecasts = await fetchForecastsForStops(weatherStops);
+      const stops: StopWeather[] = weatherStops.map((stop) => ({
         stop,
         forecast: lookupDay(
           forecasts,
@@ -56,7 +56,7 @@ export function useTripWeather() {
         fetchedAt: null,
       });
     }
-  }, []);
+  }, [weatherStops]);
 
   useEffect(() => {
     load();
