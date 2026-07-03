@@ -3,6 +3,10 @@ import type { DayPhoto } from "./photos";
 import type { WildlifeSpecies } from "./wildlife";
 import type { MapPoint, MapRouteSegment } from "./mapRoute";
 import type { WeatherStop } from "./weatherStops";
+import { getEffortStats, type EffortStats } from "../lib/effort";
+import { getFunStats, type FunStats } from "../lib/fun";
+import { getTransitStats, type TransitStats } from "../lib/transit";
+import { buildWeatherAssessment, type WeatherAssessment } from "../lib/weather-assessment";
 
 export type LegType =
   | "flight"
@@ -120,12 +124,22 @@ export function getHikingDay(
   );
 }
 
-export function getTripStats(meta: TripMeta, hikingDays: HikingDay[]) {
+export function getTripStats(meta: TripMeta, hikingDays: HikingDay[], connections: Connection[] = []) {
   const totalAscentM = hikingDays.reduce((sum, day) => sum + day.ascentM, 0);
   const start = new Date(`${meta.departureDate}T12:00:00`);
   const end = new Date(`${meta.returnDate}T12:00:00`);
   const calendarDays =
     Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+  const transit = getTransitStats(
+    connections,
+    meta.hikingDays,
+    calendarDays,
+  );
+
+  const effort = getEffortStats(meta, hikingDays);
+  const weather = buildWeatherAssessment(meta.id);
+  const fun = getFunStats(transit, effort, weather);
 
   return {
     totalAscentM,
@@ -135,8 +149,14 @@ export function getTripStats(meta: TripMeta, hikingDays: HikingDay[]) {
     hutNights: meta.hutNights ?? 0,
     lodgedNights: meta.lodgedNights,
     route: meta.route,
+    transit,
+    effort,
+    weather,
+    fun,
   };
 }
+
+export type { TransitStats, EffortStats, WeatherAssessment, FunStats };
 
 export function photoKey(dateIso: string, dayLabel: string): string {
   return `${dateIso}::${dayLabel}`;

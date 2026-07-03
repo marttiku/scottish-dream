@@ -1,14 +1,24 @@
+import { useMemo } from "react";
 import { getTripStats } from "../data/types";
 import { useTrip } from "../context/TripContext";
+import { useTripWeatherContext } from "../context/TripWeatherContext";
 import {
   formatTripDateLong,
   formatTripDateRangeWithWeekdays,
   formatTripDateShort,
 } from "../lib/dates";
 import {
+  assessLiveWeatherFromRows,
+  buildWeatherAssessment,
+} from "../lib/weather-assessment";
+import { getFunStats } from "../lib/fun";
+import { TripIndicatorPills } from "./TripIndicatorPills";
+import {
+  Activity,
   ArrowRight,
   BedDouble,
   Calendar,
+  CloudSun,
   Footprints,
   Home,
   MapPin,
@@ -31,8 +41,19 @@ function formatAscent(m: number): string {
 export function Hero() {
   const { trip, tripId } = useTrip();
   const { meta } = trip;
+  const { stops, loading: weatherLoading } = useTripWeatherContext();
   const days = daysUntil(meta.departureDate);
-  const stats = getTripStats(meta, trip.hikingDays);
+  const stats = getTripStats(meta, trip.hikingDays, trip.connections);
+
+  const weather = useMemo(() => {
+    const live = assessLiveWeatherFromRows(stops);
+    return buildWeatherAssessment(tripId, live);
+  }, [stops, tripId]);
+
+  const fun = useMemo(
+    () => getFunStats(stats.transit, stats.effort, weather),
+    [stats.transit, stats.effort, weather],
+  );
 
   const countdown =
     days > 0 ? `${days} days away` : days === 0 ? "Departs today" : "Underway";
@@ -111,9 +132,16 @@ export function Hero() {
           <p className="mt-3 text-xs text-gray-500">
             {stats.calendarDays} days · {stats.route} · {meta.transportLabel}
           </p>
+          <TripIndicatorPills
+            fun={fun}
+            effort={stats.effort}
+            weather={weather}
+            weatherLoading={weatherLoading}
+            compact
+          />
         </div>
 
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
           <StatCard
             icon={Timer}
             label="Duration"
@@ -125,6 +153,27 @@ export function Hero() {
             label="Hiking"
             value={`${meta.hikingDays} days`}
             hint={meta.hikingStatHint}
+          />
+          <StatCard
+            icon={Activity}
+            label="Effort"
+            value={stats.effort.label}
+            hint={stats.effort.hint}
+          />
+          <StatCard
+            icon={CloudSun}
+            label="Weather"
+            value={weather.displayValue}
+            hint={weather.displayHint}
+            valueClassName={
+              weather.tone === "green"
+                ? "text-green-400"
+                : weather.tone === "yellow"
+                  ? "text-yellow-400"
+                  : weather.tone === "orange"
+                    ? "text-orange-400"
+                    : "text-red-400"
+            }
           />
           <StatCard
             icon={MapPin}
@@ -187,11 +236,13 @@ function StatCard({
   label,
   value,
   hint,
+  valueClassName,
 }: {
   icon: typeof Calendar;
   label: string;
   value: string;
   hint?: string;
+  valueClassName?: string;
 }) {
   return (
     <div className="bg-gray-900/60 backdrop-blur border border-gray-800 rounded-lg px-3 py-3 sm:px-4">
@@ -199,7 +250,11 @@ function StatCard({
         <Icon className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
         {label}
       </div>
-      <p className="text-lg sm:text-xl font-semibold text-gray-100">{value}</p>
+      <p
+        className={`text-lg sm:text-xl font-semibold text-gray-100 ${valueClassName ?? ""}`}
+      >
+        {value}
+      </p>
       {hint && <p className="text-xs text-gray-500 mt-0.5 leading-snug">{hint}</p>}
     </div>
   );
