@@ -91,7 +91,7 @@ export const DAY_PHOTOS: Record<string, DayPhoto[]> = {
   ],
   "2026-07-08::Day 1": [
     {
-      src: u("1548013146-72479768bada"),
+      src: w("1/17/Glenfinnan_Viaduct.jpg/1280px-Glenfinnan_Viaduct.jpg"),
       alt: "Steam train crossing Glenfinnan Viaduct",
       caption: "West Highland Line — Glenfinnan",
     },

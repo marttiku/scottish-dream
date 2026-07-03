@@ -31,7 +31,7 @@ export function TripIndicatorPills({
 }) {
   return (
     <div
-      className={`grid grid-cols-3 gap-1.5 sm:gap-2 ${compact ? "" : "mt-3"} ${dense ? "min-w-0 flex-1" : ""}`}
+      className={`grid grid-cols-3 gap-1.5 w-full ${compact ? "" : "mt-3"}`}
       aria-label="Trip indicators: fun, effort, weather"
     >
       <IndicatorPill
@@ -82,16 +82,19 @@ function IndicatorPill({
 }) {
   return (
     <div
-      className={`rounded-lg border backdrop-blur-sm ${dense ? "px-2 py-1.5" : "px-2.5 py-2"} ${TONE_CLASSES[tone]}`}
+      className={`min-w-0 rounded-lg border backdrop-blur-sm ${dense ? "px-1.5 py-1.5" : "px-2.5 py-2"} ${TONE_CLASSES[tone]}`}
     >
-      <div className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wide opacity-80">
+      <div className="flex items-center gap-0.5 text-[9px] font-medium uppercase tracking-wide opacity-80">
         <Icon
-          className={`w-3 h-3 shrink-0 ${spinning ? "animate-spin motion-reduce:animate-none" : ""}`}
+          className={`w-2.5 h-2.5 shrink-0 ${spinning ? "animate-spin motion-reduce:animate-none" : ""}`}
           aria-hidden="true"
         />
-        {label}
+        <span className="truncate">{label}</span>
       </div>
-      <p className={`mt-0.5 font-semibold leading-tight ${dense ? "text-xs" : "text-sm"}`}>
+      <p
+        className={`mt-0.5 font-semibold leading-tight truncate ${dense ? "text-xs" : "text-sm"}`}
+        title={value}
+      >
         {value}
       </p>
       {!dense && (

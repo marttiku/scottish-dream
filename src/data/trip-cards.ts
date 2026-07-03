@@ -1,4 +1,4 @@
-import { unsplashPhoto, wikimediaThumb } from "./photos";
+import { wikimediaThumb } from "./photos";
 
 export interface TripCard {
   id: string;
@@ -11,7 +11,9 @@ export interface TripCard {
 export const TRIP_CARDS: Record<string, TripCard> = {
   scotland: {
     id: "scotland",
-    image: unsplashPhoto("1548013146-72479768bada"),
+    image: wikimediaThumb(
+      "1/17/Glenfinnan_Viaduct.jpg/1280px-Glenfinnan_Viaduct.jpg",
+    ),
     imageAlt: "Steam train crossing Glenfinnan Viaduct in the Scottish Highlands",
     highlights: [
       "Knoydart traverse — wild camps & bothy nights",
