@@ -4,7 +4,6 @@ import { getTripCard } from "../data/trip-cards";
 import { useTrip } from "../context/TripContext";
 import { useAllTripsWeather } from "../hooks/useAllTripsWeather";
 import { formatTripDateRangeWithWeekdays } from "../lib/dates";
-import { getFunStats } from "../lib/fun";
 import { TripIndicatorPills } from "./TripIndicatorPills";
 import { Check } from "lucide-react";
 
@@ -25,7 +24,7 @@ export function TripPicker() {
       <div className="mb-4">
         <h2 className="text-2xl font-semibold text-gray-100">Potential trips</h2>
         <p className="text-sm text-gray-400 mt-1">
-          Same dates · 7–15 Jul 2026 — compare fun, effort & weather, then pick a
+          Same dates · 7–15 Jul 2026 — compare trail time, effort & weather, then pick a
           route
         </p>
       </div>
@@ -38,7 +37,6 @@ export function TripPicker() {
 
             const stats = getTripStats(t.meta, t.hikingDays, t.connections);
             const weather = weatherByTrip[t.meta.id] ?? stats.weather;
-            const fun = getFunStats(stats.transit, stats.effort, weather);
             const isActive = tripId === t.meta.id;
 
             return (
@@ -94,7 +92,7 @@ export function TripPicker() {
                   </div>
 
                   <TripIndicatorPills
-                    fun={fun}
+                    trailTime={stats.trailTime}
                     effort={stats.effort}
                     weather={weather}
                     weatherLoading={weatherLoading}

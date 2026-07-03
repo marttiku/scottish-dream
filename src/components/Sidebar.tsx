@@ -25,7 +25,6 @@ import {
   assessLiveWeatherFromRows,
   buildWeatherAssessment,
 } from "../lib/weather-assessment";
-import { getFunStats } from "../lib/fun";
 
 const NAV_ITEMS: {
   id: string;
@@ -68,11 +67,6 @@ export function Sidebar() {
     return buildWeatherAssessment(tripId, live);
   }, [stops, tripId]);
 
-  const fun = useMemo(
-    () => getFunStats(stats.transit, stats.effort, weather),
-    [stats.transit, stats.effort, weather],
-  );
-
   const visibleNav = NAV_ITEMS.filter((item) => navItemVisible(item, meta));
 
   return (
@@ -87,7 +81,7 @@ export function Sidebar() {
         </p>
         <p className="text-xs text-gray-500 mt-1">
           {stats.transit.formatted} transit ·{" "}
-          <span className="text-indigo-400">{fun.percent}% fun</span>
+          <span className="text-indigo-400">{stats.trailTime.percent}% trail</span>
           {" · "}
           <span className="text-gray-400">{stats.effort.label} effort</span>
           {" · "}

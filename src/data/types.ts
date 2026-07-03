@@ -4,7 +4,7 @@ import type { WildlifeSpecies } from "./wildlife";
 import type { MapPoint, MapRouteSegment } from "./mapRoute";
 import type { WeatherStop } from "./weatherStops";
 import { getEffortStats, type EffortStats } from "../lib/effort";
-import { getFunStats, type FunStats } from "../lib/fun";
+import { getTrailTimeStats, type TrailTimeStats } from "../lib/trail-time";
 import { getTransitStats, type TransitStats } from "../lib/transit";
 import { buildWeatherAssessment, type WeatherAssessment } from "../lib/weather-assessment";
 
@@ -95,6 +95,10 @@ export interface TripMeta {
   showFood: boolean;
   showGearShop: boolean;
   showWildlife: boolean;
+  /** Round-trip flight/ferry to gateway hub (minutes). */
+  flightFerryMinutes: number;
+  /** Connection modes covered by flightFerryMinutes (default: flight only). */
+  gatewayTransitModes?: LegType[];
 }
 
 export interface TripData {
@@ -131,15 +135,14 @@ export function getTripStats(meta: TripMeta, hikingDays: HikingDay[], connection
   const calendarDays =
     Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
-  const transit = getTransitStats(
-    connections,
-    meta.hikingDays,
-    calendarDays,
-  );
+  const transit = getTransitStats(connections, meta.hikingDays, calendarDays, {
+    flightFerryMinutes: meta.flightFerryMinutes,
+    gatewayModes: meta.gatewayTransitModes,
+  });
 
   const effort = getEffortStats(meta, hikingDays);
   const weather = buildWeatherAssessment(meta.id);
-  const fun = getFunStats(transit, effort, weather);
+  const trailTime = getTrailTimeStats(transit, effort.totalKm);
 
   return {
     totalAscentM,
@@ -152,11 +155,11 @@ export function getTripStats(meta: TripMeta, hikingDays: HikingDay[], connection
     transit,
     effort,
     weather,
-    fun,
+    trailTime,
   };
 }
 
-export type { TransitStats, EffortStats, WeatherAssessment, FunStats };
+export type { TransitStats, EffortStats, WeatherAssessment, TrailTimeStats };
 
 export function photoKey(dateIso: string, dayLabel: string): string {
   return `${dateIso}::${dayLabel}`;

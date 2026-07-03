@@ -52,9 +52,9 @@ export const TRIP_CARDS: Record<string, TripCard> = {
     ),
     imageAlt: "Mont Blanc massif above the Glacier du Géant",
     highlights: [
-      "Tour du Mont Blanc — France, Italy & Switzerland",
+      "Tour du Mont Blanc — clockwise from Chamonix",
       "Grand Col Ferret · Rifugio Bonatti",
-      "Lac Blanc finale above Chamonix",
+      "8 days · fly home Thu 16 Jul from Geneva",
     ],
   },
 };

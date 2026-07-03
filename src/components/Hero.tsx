@@ -11,7 +11,6 @@ import {
   assessLiveWeatherFromRows,
   buildWeatherAssessment,
 } from "../lib/weather-assessment";
-import { getFunStats } from "../lib/fun";
 import { TripIndicatorPills } from "./TripIndicatorPills";
 import {
   Activity,
@@ -49,11 +48,6 @@ export function Hero() {
     const live = assessLiveWeatherFromRows(stops);
     return buildWeatherAssessment(tripId, live);
   }, [stops, tripId]);
-
-  const fun = useMemo(
-    () => getFunStats(stats.transit, stats.effort, weather),
-    [stats.transit, stats.effort, weather],
-  );
 
   const countdown =
     days > 0 ? `${days} days away` : days === 0 ? "Departs today" : "Underway";
@@ -133,7 +127,7 @@ export function Hero() {
             {stats.calendarDays} days · {stats.route} · {meta.transportLabel}
           </p>
           <TripIndicatorPills
-            fun={fun}
+            trailTime={stats.trailTime}
             effort={stats.effort}
             weather={weather}
             weatherLoading={weatherLoading}

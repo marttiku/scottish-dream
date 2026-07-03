@@ -1,4 +1,14 @@
-import type { Connection } from "../data/types";
+import type { Connection, LegType } from "../data/types";
+
+/** Modes replaced by trip-level gateway flight/ferry totals (not summed per leg). */
+const DEFAULT_GATEWAY_MODES: LegType[] = ["flight"];
+
+export interface TransitStatsOptions {
+  /** Round-trip flight/ferry time to the gateway hub (minutes). */
+  flightFerryMinutes?: number;
+  /** Which connection modes are covered by flightFerryMinutes. */
+  gatewayModes?: LegType[];
+}
 
 /** Parse connection duration strings like "~2 h 45 min", "~10–11 h", "~25–40 min". */
 export function parseDurationMinutes(duration: string): number {
@@ -46,11 +56,16 @@ export function getTransitStats(
   connections: Connection[],
   hikingDays: number,
   calendarDays: number,
+  options: TransitStatsOptions = {},
 ): TransitStats {
-  const totalMinutes = connections.reduce(
-    (sum, c) => sum + parseDurationMinutes(c.duration),
-    0,
-  );
+  const flightFerryMinutes = options.flightFerryMinutes ?? 0;
+  const gatewayModes = new Set(options.gatewayModes ?? DEFAULT_GATEWAY_MODES);
+
+  const localMinutes = connections
+    .filter((c) => !gatewayModes.has(c.mode))
+    .reduce((sum, c) => sum + parseDurationMinutes(c.duration), 0);
+
+  const totalMinutes = localMinutes + flightFerryMinutes;
 
   return {
     totalMinutes,

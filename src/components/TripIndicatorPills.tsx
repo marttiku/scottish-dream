@@ -1,9 +1,9 @@
 import type { EffortStats } from "../lib/effort";
 import { effortTone } from "../lib/effort";
-import type { FunStats } from "../lib/fun";
-import { funTone } from "../lib/fun";
+import type { TrailTimeStats } from "../lib/trail-time";
+import { trailTimeTone } from "../lib/trail-time";
 import type { WeatherAssessment } from "../lib/weather-assessment";
-import { Activity, CloudSun, Loader2, Sparkles } from "lucide-react";
+import { Activity, CloudSun, Footprints, Loader2 } from "lucide-react";
 
 const TONE_CLASSES = {
   green: "border-green-500/30 bg-green-500/10 text-green-400",
@@ -14,14 +14,14 @@ const TONE_CLASSES = {
 } as const;
 
 export function TripIndicatorPills({
-  fun,
+  trailTime,
   effort,
   weather,
   weatherLoading,
   compact,
   dense,
 }: {
-  fun: FunStats;
+  trailTime: TrailTimeStats;
   effort: EffortStats;
   weather: WeatherAssessment;
   weatherLoading?: boolean;
@@ -32,14 +32,14 @@ export function TripIndicatorPills({
   return (
     <div
       className={`grid grid-cols-3 gap-1.5 w-full ${compact ? "" : "mt-3"}`}
-      aria-label="Trip indicators: fun, effort, weather"
+      aria-label="Trip indicators: trail time, effort, weather"
     >
       <IndicatorPill
-        icon={Sparkles}
-        label="Fun"
-        value={`${fun.percent}%`}
-        hint={fun.hint}
-        tone={funTone(fun.percent)}
+        icon={Footprints}
+        label="Trail time"
+        value={`${trailTime.percent}%`}
+        hint={trailTime.hint}
+        tone={trailTimeTone(trailTime.percent)}
         dense={dense}
       />
       <IndicatorPill
@@ -72,7 +72,7 @@ function IndicatorPill({
   spinning,
   dense,
 }: {
-  icon: typeof Sparkles;
+  icon: typeof Footprints;
   label: string;
   value: string;
   hint: string;

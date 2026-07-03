@@ -54,6 +54,8 @@ export const scotlandTrip: TripData = {
     showFood: true,
     showGearShop: true,
     showWildlife: true,
+    flightFerryMinutes: 12 * 60,
+    gatewayTransitModes: ["flight", "ferry"],
   },
   timeline: TIMELINE,
   hikingDays: HIKING_DAYS,

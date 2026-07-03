@@ -59,6 +59,8 @@ export const laplandTrip: TripData = {
     showFood: false,
     showGearShop: false,
     showWildlife: true,
+    flightFerryMinutes: 6 * 60,
+    gatewayTransitModes: ["flight", "ferry"],
   },
   timeline: [
     {

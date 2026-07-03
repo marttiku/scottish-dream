@@ -56,6 +56,7 @@ export const tatrasTrip: TripData = {
     showFood: false,
     showGearShop: false,
     showWildlife: true,
+    flightFerryMinutes: 4 * 60,
   },
   timeline: [
     {
